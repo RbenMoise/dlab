@@ -1,0 +1,21 @@
+<!-- templates/landing.html -->
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+  <div class="jumbotron mt-5">
+    <h1>Welcome to MaabaraConn!</h1>
+    <p class="lead">
+      Your digital laboratory connection for submitting and grading lab reports
+      efficiently.
+    </p>
+    <hr class="my-4" />
+    <p>Join us to streamline your laboratory workflows.</p>
+    <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+    <a
+      class="btn btn-secondary btn-lg"
+      href="{% url 'register' %}"
+      role="button"
+      >Register</a
+    >
+  </div>
+</div>
+{% endblock %}

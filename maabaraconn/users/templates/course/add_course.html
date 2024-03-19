@@ -1,0 +1,8 @@
+<!-- templates/course/add_course.html -->
+{% extends 'base.html' %} {% block content %}
+<h2>Add Course</h2>
+<form method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">Add Course</button>
+</form>
+{% endblock %}

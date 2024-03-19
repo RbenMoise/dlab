@@ -1,0 +1,71 @@
+{% comment %}
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MaabaraConn</title>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <!-- Add your navigation links here -->
+        <a href="{% url 'register' %}">Register</a>
+        <a href="{% url 'add_course' %}">Add Course</a>
+        <a href="{% url 'submit_report' %}">Submit Lab Report</a>
+        <!-- Add more links as needed -->
+      </nav>
+    </header>
+
+    {% block content %} {% endblock content %}
+  </body>
+</html>
+{% endcomment %}
+
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MaabaraConn</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">MaabaraConn</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="#"
+              >Home <span class="sr-only">(current)</span></a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Features</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Pricing</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    {% block content %}
+    <!-- Content goes here -->
+    {% endblock %}
+
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  </body>
+</html>

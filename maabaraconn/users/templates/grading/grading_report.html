@@ -1,0 +1,8 @@
+<!-- templates/grading/grade_report.html -->
+{% extends 'base.html' %} {% block content %}
+<h2>Grade Lab Report</h2>
+<form method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">Grade Report</button>
+</form>
+{% endblock %}
