@@ -1,33 +1,43 @@
-<!-- templates/users/student_dashboard.html -->
 {% extends 'base.html' %} {% block content %}
 <div class="container">
   <h1>Welcome, {{ request.user.username }}</h1>
 
   <section>
-    <h2>My Courses</h2>
+    <h2>My Enrolled Courses</h2>
     <ul>
-      {% for course in courses %}
+      {% for course in request.user.enrolled_courses.all %}
       <li>{{ course.name }} - {{ course.code }}</li>
       {% endfor %}
     </ul>
   </section>
 
   <section>
+    <h2>Available Courses</h2>
+    {% for course in available_courses %}
+    <div>
+      <h3>{{ course.name }}</h3>
+      <p>{{ course.description }}</p>
+      {% if course not in request.user.enrolled_courses.all %}
+      <form method="post" action="{% url 'enroll_course' %}">
+        {% csrf_token %}
+        <input type="hidden" name="course_id" value="{{ course.id }}" />
+        <button type="submit" class="btn btn-primary">Enroll</button>
+      </form>
+      {% else %}
+      <span>Already enrolled</span>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </section>
+
+  <section>
     <h2>Upcoming Lab Reports</h2>
-    <ul>
-      {% for report in lab_reports %}
-      <li>{{ report.title }} - Due: {{ report.due_date }}</li>
-      {% endfor %}
-    </ul>
+    <!-- Implementation depends on how Lab Reports are linked to the student -->
   </section>
 
   <section>
     <h2>My Grades</h2>
-    <ul>
-      {% for grade in grades %}
-      <li>{{ grade.lab_report.title }} - Score: {{ grade.score }}</li>
-      {% endfor %}
-    </ul>
+    <!-- Implementation depends on how Grades are stored and linked to the student -->
   </section>
 </div>
 {% endblock %}

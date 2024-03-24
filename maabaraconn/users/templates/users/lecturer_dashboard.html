@@ -9,4 +9,30 @@
   <li>Assign grades</li>
   <!-- Add more lecturer-specific functionality as needed -->
 </ul>
+<div class="container">
+  <h2>Lecturer Dashboard</h2>
+  <!-- Link to Add New Course -->
+  <a href="{% url 'add_course' %}" class="btn btn-primary">Add New Course</a>
+
+  <h3>Your Courses:</h3>
+  {% if courses %}
+  <ul>
+    {% for course in courses %}
+    <li>{{ course.name }} ({{ course.code }})</li>
+    <!-- Add options to edit or delete courses here -->
+    <!-- Delete Button -->
+    <form
+      action="{% url 'delete_course' course.id %}"
+      method="post"
+      style="display: inline"
+    >
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+    </form>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>You haven't created any courses yet.</p>
+  {% endif %}
+</div>
 {% endblock %}

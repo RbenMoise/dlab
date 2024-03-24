@@ -36,8 +36,8 @@ class User(AbstractUser):
 
 
 class Course(models.Model):
-    name = models.CharField(max_length=255)
-    code = models.CharField(max_length=10)
+    name = models.CharField(max_length=255, unique=True)
+    code = models.CharField(max_length=10, unique=True)
     lecturer = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='courses')
 
@@ -45,7 +45,7 @@ class Course(models.Model):
         return f"{self.code} - {self.name}"
 
     enrolled_students = models.ManyToManyField(
-        User, related_name='enrolled_courses')
+        User, related_name='enrolled_courses', blank=False)
 
 
 class Laboratory(models.Model):

@@ -1,9 +1,11 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.views import LogoutView
 
 
 urlpatterns = [
+    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('', views.landing_page, name='landing_page'),
     path('register/', views.register, name='register'),
@@ -20,5 +22,7 @@ urlpatterns = [
     path('dashboard/lecturer/', views.dashboard,
          name='lecturer_dashboard'),
     path('dashboard/labtech/', views.dashboard, name='labtech_dashboard'),
-
+    path('add_course/', views.CourseCreateView.as_view(), name='add_course'),
+    path('delete_course/<int:course_id>/',
+         views.delete_course, name='delete_course'),
 ]

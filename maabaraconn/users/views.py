@@ -1,4 +1,5 @@
-from django.shortcuts import render, HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import get_object_or_404, render, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import render
@@ -11,6 +12,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 
 from .forms import GradeForm, UserRegistrationForm, CourseForm, LabReportForm
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
 def register(request):
@@ -104,7 +106,7 @@ def dashboard(request):
             laboratory__course__lecturer=request.user, status='Pending')  # Example query
 
         context = {
-            'courses_taught': courses_taught,
+            'courses': courses_taught,
             'pending_reports': pending_reports,
         }
         return render(request, 'users/lecturer_dashboard.html', context)
@@ -133,3 +135,43 @@ def grade_report(request, report_id):
     if not request.user.is_lecturer:
         return HttpResponseForbidden('not a lexc')
     # Logic for grading a report
+
+
+class CourseCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Course
+    form_class = CourseForm
+    template_name = 'course/add_course.html'
+    success_url = '/users/dashboard/'
+
+    def form_valid(self, form):
+        form.instance.lecturer = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        return self.request.user.role == User.Role.LECTURER
+
+
+@login_required
+def delete_course(request, course_id):
+    # Ensure only lecturers can delete courses
+    if request.user.role != User.Role.LECTURER:
+        return HttpResponseForbidden("You are not authorized to delete courses.")
+
+    course = get_object_or_404(Course, id=course_id, lecturer=request.user)
+    course.delete()
+    # Redirect to the dashboard after deletion
+    return redirect('lecturer_dashboard')
+
+
+@login_required
+def enroll_course(request):
+    if request.method == 'POST':
+        course_id = request.POST.get('course_id')
+        course = Course.objects.get(id=course_id)
+        course.students.add(request.user)
+        course.save()
+        messages.success(request, "Enrolled successfully!")
+        return redirect('student_dashboard')
+    else:
+        all_courses = Course.objects.all()
+        return render(request, 'enroll_course.html', {'courses': all_courses})
