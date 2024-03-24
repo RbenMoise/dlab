@@ -13,6 +13,7 @@ from django.shortcuts import render, redirect
 
 from .forms import GradeForm, UserRegistrationForm, CourseForm, LabReportForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from .models import Course
 
 
 def register(request):
@@ -184,3 +185,16 @@ def enroll_course(request):
     else:
         all_courses = Course.objects.all()
         return render(request, 'enroll_course.html', {'courses': all_courses})
+
+
+def unenroll_course(request):
+    if request.method == 'POST':
+        course_id = request.POST.get('course_id')
+        course = get_object_or_404(Course, id=course_id)
+        request.user.enrolled_courses.remove(course)
+        # Assuming 'enrolled_courses' is the ManyToManyField linking users to courses
+        # Redirect to the dashboard or an appropriate view
+        return redirect('student_dashboard')
+    else:
+        # Handle non-POST request; redirect as needed
+        return redirect('student_dashboard')

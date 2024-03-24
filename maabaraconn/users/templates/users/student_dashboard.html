@@ -1,12 +1,22 @@
 {% extends 'base.html' %} {% block content %}
 <div class="container">
   <h1>Welcome, {{ request.user.username }}</h1>
-
   <section>
     <h2>My Enrolled Courses</h2>
     <ul>
       {% for course in request.user.enrolled_courses.all %}
-      <li>{{ course.name }} - {{ course.code }}</li>
+      <li>
+        {{ course.name }} - {{ course.code }}
+        <form
+          method="post"
+          action="{% url 'unenroll_course' %}"
+          style="display: inline"
+        >
+          {% csrf_token %}
+          <input type="hidden" name="course_id" value="{{ course.id }}" />
+          <button type="submit" class="btn btn-warning">Unenroll</button>
+        </form>
+      </li>
       {% endfor %}
     </ul>
   </section>
