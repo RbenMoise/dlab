@@ -86,16 +86,25 @@ def dashboard(request):
     if request.user.role == User.Role.STUDENT:
         # Fetch data relevant to students
         courses = Course.objects.filter(
-            enrolled_students=request.user)  # Example query
+            student=request.user)  # Example query
         lab_reports = LabReport.objects.filter(
             student=request.user)  # Example query
         grades = Grade.objects.filter(
             lab_report__student=request.user)  # Example query
+        enrolled_courses = request.user.enrolled_courses.all()
+        # Assuming Course is your model name
+        available_courses = Course.objects.exclude(
+            id__in=enrolled_courses.values_list('id', flat=True))
 
+        # Assuming you're fetching lab_reports and grades somehow
+        lab_reports = LabReport.objects.filter(student=request.user)
+        grades = Grade.objects.filter(lab_report__student=request.user)
         context = {
-            'courses': courses,
+            'enrolled_courses': enrolled_courses,
+            'available_courses': available_courses,
             'lab_reports': lab_reports,
             'grades': grades,
+            'courses': courses
         }
         return render(request, 'users/student_dashboard.html', context)
     elif request.user.role == User.Role.LECTURER:
@@ -168,7 +177,7 @@ def enroll_course(request):
     if request.method == 'POST':
         course_id = request.POST.get('course_id')
         course = Course.objects.get(id=course_id)
-        course.students.add(request.user)
+        course.student.add(request.user)
         course.save()
         messages.success(request, "Enrolled successfully!")
         return redirect('student_dashboard')

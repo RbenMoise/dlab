@@ -25,4 +25,5 @@ urlpatterns = [
     path('add_course/', views.CourseCreateView.as_view(), name='add_course'),
     path('delete_course/<int:course_id>/',
          views.delete_course, name='delete_course'),
+    path('enroll_course/', views.enroll_course, name='enroll_course'),
 ]

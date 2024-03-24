@@ -44,7 +44,7 @@ class Course(models.Model):
     def __str__(self):
         return f"{self.code} - {self.name}"
 
-    enrolled_students = models.ManyToManyField(
+    student = models.ManyToManyField(
         User, related_name='enrolled_courses', blank=False)
 
 
