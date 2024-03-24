@@ -82,14 +82,41 @@ def user_logout(request):
 @login_required
 def dashboard(request):
     if request.user.role == User.Role.STUDENT:
-        # Logic for student dashboard
-        return render(request, 'users/student_dashboard.html')
+        # Fetch data relevant to students
+        courses = Course.objects.filter(
+            enrolled_students=request.user)  # Example query
+        lab_reports = LabReport.objects.filter(
+            student=request.user)  # Example query
+        grades = Grade.objects.filter(
+            lab_report__student=request.user)  # Example query
+
+        context = {
+            'courses': courses,
+            'lab_reports': lab_reports,
+            'grades': grades,
+        }
+        return render(request, 'users/student_dashboard.html', context)
     elif request.user.role == User.Role.LECTURER:
-        # Logic for lecturer dashboard
-        return render(request, 'users/lecturer_dashboard.html')
+        # Fetch data relevant to lecturers
+        courses_taught = Course.objects.filter(
+            lecturer=request.user)  # Example query
+        pending_reports = LabReport.objects.filter(
+            laboratory__course__lecturer=request.user, status='Pending')  # Example query
+
+        context = {
+            'courses_taught': courses_taught,
+            'pending_reports': pending_reports,
+        }
+        return render(request, 'users/lecturer_dashboard.html', context)
     elif request.user.role == User.Role.LAB_TECH:
-        # Logic for lab technician dashboard
-        return render(request, 'users/labtech_dashboard.html')
+        # Fetch data relevant to lab technicians
+        lab_reports_to_process = LabReport.objects.filter(
+            status='Processing')  # Example query
+
+        context = {
+            'lab_reports_to_process': lab_reports_to_process,
+        }
+        return render(request, 'users/labtech_dashboard.html', context)
     else:
         # Default to a generic response or dashboard if the role is unknown
         return HttpResponse("Your role is not defined for a specific dashboard.")

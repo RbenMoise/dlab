@@ -44,6 +44,9 @@ class Course(models.Model):
     def __str__(self):
         return f"{self.code} - {self.name}"
 
+    enrolled_students = models.ManyToManyField(
+        User, related_name='enrolled_courses')
+
 
 class Laboratory(models.Model):
     course = models.ForeignKey(
@@ -71,6 +74,7 @@ class LabReport(models.Model):
         Laboratory, on_delete=models.CASCADE, related_name='lab_reports')
     submittion_file = models.FileField(upload_to='lab_reports/')
     submitted_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=100, default='Pending')
 
     def __str__(self):
         return f"Report by {self.student.username} for {self.laboratory.title}"

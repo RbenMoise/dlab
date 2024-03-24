@@ -1,9 +1,33 @@
+<!-- templates/users/student_dashboard.html -->
 {% extends 'base.html' %} {% block content %}
-<h2>Welcome, {{ request.user.username }}!</h2>
-<p>This is the Student Dashboard. Here, you can:</p>
-<ul>
-  <li><a href="{% url 'submit_report' %}">Submit Lab Reports</a></li>
-  <li>View your grades</li>
-  <!-- Add more student-specific functionality as needed -->
-</ul>
+<div class="container">
+  <h1>Welcome, {{ request.user.username }}</h1>
+
+  <section>
+    <h2>My Courses</h2>
+    <ul>
+      {% for course in courses %}
+      <li>{{ course.name }} - {{ course.code }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section>
+    <h2>Upcoming Lab Reports</h2>
+    <ul>
+      {% for report in lab_reports %}
+      <li>{{ report.title }} - Due: {{ report.due_date }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section>
+    <h2>My Grades</h2>
+    <ul>
+      {% for grade in grades %}
+      <li>{{ grade.lab_report.title }} - Score: {{ grade.score }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+</div>
 {% endblock %}
