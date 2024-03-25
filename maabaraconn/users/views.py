@@ -126,7 +126,11 @@ def dashboard(request):
             status='Processing')  # Example query
         courses = Course.objects.all()
         course_id = Course.objects.first().id
+        my_laboratories = Laboratory.objects.filter(creator=request.user)
+        my_lab_reports = LabReport.objects.filter(creator=request.user)
         context = {
+            'my_laboratories': my_laboratories,
+            'my_lab_reports': my_lab_reports,
             'course_id': course_id,
             'courses': courses,
             'lab_reports_to_process': lab_reports_to_process,
@@ -219,15 +223,19 @@ def upload_lab_report(request, course_id):
     return render(request, 'course/upload_lab_report.html', {'form': form, 'course': course})
 
 
+@login_required
 def add_laboratory(request):
     if request.method == 'POST':
         form = LaboratoryForm(request.POST)
         if form.is_valid():
-            form.save()
-            # Redirect to labtech dashboard or a page confirming successful creation
-            return redirect('labtech_dashboard')
+            # Save the form temporarily without committing to the database
+            laboratory = form.save(commit=False)
+            laboratory.creator = request.user  # Set the current user as the creator
+            laboratory.save()  # Now save the laboratory instance to the database
+            return redirect('labtech_dashboard')  # Redirect to the desired URL
     else:
         form = LaboratoryForm()
+
     return render(request, 'users/add_laboratory.html', {'form': form})
 
 
@@ -246,7 +254,7 @@ def my_creations(request):
             'my_lab_reports': my_lab_reports,
             'my_laboratories': my_laboratories,
         }
-        return render(request, 'my_creations.html', context)
+        return render(request, 'labtech_dashboard.html', context)
     else:
         # Redirect or show an error message if the user is not a lab technician
         return render(request, 'error_page.html', {'error': 'You do not have permission to view this page.'})
