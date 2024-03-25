@@ -21,4 +21,22 @@
 </form>
 <a href="{% url 'add_laboratory' %}">Add a New Laboratory</a>
 
+<h2>My Lab Reports</h2>
+<ul>
+  {% for report in my_lab_reports %}
+    <li>{{ report.title }} - {{ report.description }}</li>
+  {% empty %}
+    <p>No lab reports found.</p>
+  {% endfor %}
+</ul>
+
+<h2>My Laboratories</h2>
+<ul>
+  {% for laboratory in my_laboratories %}
+    <li>{{ laboratory.name }} - {{ laboratory.location }}</li>
+  {% empty %}
+    <p>No laboratories found.</p>
+  {% endfor %}
+</ul>
+
 {% endblock %}

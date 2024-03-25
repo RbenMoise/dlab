@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
@@ -53,6 +54,8 @@ class Laboratory(models.Model):
         Course, on_delete=models.CASCADE, related_name='laboratories')
     name = models.CharField(max_length=255)
     # description = models.TextField(blank=True)
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='laboratories')
 
     def __str__(self):
         return self.name
@@ -68,6 +71,8 @@ class LabTemplate(models.Model):
 
 
 class LabReport(models.Model):
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='lab_reports')
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name='lab_reports')
     title = models.CharField(max_length=255)

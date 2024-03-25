@@ -203,6 +203,7 @@ def unenroll_course(request):
         return redirect('student_dashboard')
 
 
+@login_required
 def upload_lab_report(request, course_id):
     course = Course.objects.get(id=course_id)
     if request.method == 'POST':
@@ -210,6 +211,7 @@ def upload_lab_report(request, course_id):
         if form.is_valid():
             lab_report = form.save(commit=False)
             lab_report.course = course
+            lab_report.creator = request.user
             lab_report.save()
             return redirect('labtech_dashboard')
     else:
@@ -227,3 +229,24 @@ def add_laboratory(request):
     else:
         form = LaboratoryForm()
     return render(request, 'users/add_laboratory.html', {'form': form})
+
+
+@login_required
+def my_creations(request):
+    if not request.user.is_authenticated:
+        # Redirect the user or show an error message
+        return render(request, 'error_page.html', {'error': 'You need to be logged in to view this page.'})
+
+    if request.user.role == 'LT':
+        # Fetch lab reports and laboratories created by the logged-in lab technician
+        my_lab_reports = LabReport.objects.filter(creator=request.user)
+        my_laboratories = Laboratory.objects.filter(creator=request.user)
+
+        context = {
+            'my_lab_reports': my_lab_reports,
+            'my_laboratories': my_laboratories,
+        }
+        return render(request, 'my_creations.html', context)
+    else:
+        # Redirect or show an error message if the user is not a lab technician
+        return render(request, 'error_page.html', {'error': 'You do not have permission to view this page.'})
