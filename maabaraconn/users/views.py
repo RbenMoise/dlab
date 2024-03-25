@@ -11,7 +11,7 @@ from .models import Course, LabReport, Laboratory, LabTemplate, Grade, User
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 
-from .forms import GradeForm, UserRegistrationForm, CourseForm, LabReportForm
+from .forms import GradeForm, LaboratoryForm, UserRegistrationForm, CourseForm, LabReportForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Course
 
@@ -124,8 +124,11 @@ def dashboard(request):
         # Fetch data relevant to lab technicians
         lab_reports_to_process = LabReport.objects.filter(
             status='Processing')  # Example query
-
+        courses = Course.objects.all()
+        course_id = Course.objects.first().id
         context = {
+            'course_id': course_id,
+            'courses': courses,
             'lab_reports_to_process': lab_reports_to_process,
         }
         return render(request, 'users/labtech_dashboard.html', context)
@@ -198,3 +201,29 @@ def unenroll_course(request):
     else:
         # Handle non-POST request; redirect as needed
         return redirect('student_dashboard')
+
+
+def upload_lab_report(request, course_id):
+    course = Course.objects.get(id=course_id)
+    if request.method == 'POST':
+        form = LabReportForm(request.POST, request.FILES, course_id=course_id)
+        if form.is_valid():
+            lab_report = form.save(commit=False)
+            lab_report.course = course
+            lab_report.save()
+            return redirect('labtech_dashboard')
+    else:
+        form = LabReportForm(course_id=course_id)
+    return render(request, 'course/upload_lab_report.html', {'form': form, 'course': course})
+
+
+def add_laboratory(request):
+    if request.method == 'POST':
+        form = LaboratoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Redirect to labtech dashboard or a page confirming successful creation
+            return redirect('labtech_dashboard')
+    else:
+        form = LaboratoryForm()
+    return render(request, 'users/add_laboratory.html', {'form': form})

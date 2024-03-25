@@ -4,6 +4,21 @@
 <ul>
   <li>Manage lab inventory</li>
   <li>Prepare lab setups</li>
-  <!-- Add more lab technician-specific functionality as needed -->
 </ul>
+
+<!-- New Section for Adding Lab Reports -->
+<h3>Add a Lab Report</h3>
+<a href="{% url 'upload_lab_report' course_id=course_id %}">Add a Lab Report</a>
+
+  {% csrf_token %}
+  <label for="course">Select Course:</label>
+  <select name="course" id="course">
+    {% for course in courses %}
+    <option value="{{ course.id }}">{{ course.name }}</option>
+    {% endfor %}
+  </select>
+  <input type="submit" value="Go to Add Report" />
+</form>
+<a href="{% url 'add_laboratory' %}">Add a New Laboratory</a>
+
 {% endblock %}

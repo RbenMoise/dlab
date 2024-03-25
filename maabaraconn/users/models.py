@@ -51,11 +51,11 @@ class Course(models.Model):
 class Laboratory(models.Model):
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name='laboratories')
-    title = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
+    name = models.CharField(max_length=255)
+    # description = models.TextField(blank=True)
 
     def __str__(self):
-        return self.title
+        return self.name
 
 
 class LabTemplate(models.Model):
@@ -68,11 +68,15 @@ class LabTemplate(models.Model):
 
 
 class LabReport(models.Model):
-    student = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='lab_reports')
+    course = models.ForeignKey(
+        Course, on_delete=models.CASCADE, related_name='lab_reports')
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    # student = models.ForeignKey(
+    # User, on_delete=models.CASCADE, related_name='lab_reports')
     laboratory = models.ForeignKey(
-        Laboratory, on_delete=models.CASCADE, related_name='lab_reports')
-    submittion_file = models.FileField(upload_to='lab_reports/')
+        Laboratory, on_delete=models.CASCADE, related_name='lab_reports', null=True)
+    document = models.FileField(upload_to='lab_reports/')
     submitted_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=100, default='Pending')
 
