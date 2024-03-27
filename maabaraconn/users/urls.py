@@ -31,4 +31,5 @@ urlpatterns = [
          views.upload_lab_report, name='upload_lab_report'),
     path('add_laboratory/', views.add_laboratory, name='add_laboratory'),
     path('lab_content/', views.my_creations, name='view_lab_content'),
+    path('course/<int:course_id>/', views.course_detail, name='course_detail'),
 ]

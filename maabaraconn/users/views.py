@@ -89,17 +89,17 @@ def dashboard(request):
         courses = Course.objects.filter(
             student=request.user)  # Example query
         lab_reports = LabReport.objects.filter(
-            student=request.user)  # Example query
+            creator=request.user)  # Example query
         grades = Grade.objects.filter(
-            lab_report__student=request.user)  # Example query
+            lab_report__creator=request.user)  # Example query
         enrolled_courses = request.user.enrolled_courses.all()
         # Assuming Course is your model name
         available_courses = Course.objects.exclude(
             id__in=enrolled_courses.values_list('id', flat=True))
 
         # Assuming you're fetching lab_reports and grades somehow
-        lab_reports = LabReport.objects.filter(student=request.user)
-        grades = Grade.objects.filter(lab_report__student=request.user)
+        lab_reports = LabReport.objects.filter(creator=request.user)
+        grades = Grade.objects.filter(lab_report__creator=request.user)
         context = {
             'enrolled_courses': enrolled_courses,
             'available_courses': available_courses,
@@ -258,3 +258,10 @@ def my_creations(request):
     else:
         # Redirect or show an error message if the user is not a lab technician
         return render(request, 'error_page.html', {'error': 'You do not have permission to view this page.'})
+
+
+def course_detail(request, course_id):
+    course = get_object_or_404(Course, pk=course_id)
+    # Assuming LabReport has a course FK
+    lab_reports = LabReport.objects.filter(course=course)
+    return render(request, 'users/course_detail.html', {'course': course, 'lab_reports': lab_reports})

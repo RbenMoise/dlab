@@ -6,7 +6,7 @@
     <ul>
       {% for course in request.user.enrolled_courses.all %}
       <li>
-        {{ course.name }} - {{ course.code }}
+        <a href="{% url 'course_detail' course.id %}">{{ course.name }} - {{ course.code }}
         <form
           method="post"
           action="{% url 'unenroll_course' %}"

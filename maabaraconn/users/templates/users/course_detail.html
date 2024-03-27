@@ -1,0 +1,13 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+  <h1>{{ course.name }} - {{ course.code }}</h1>
+  <section>
+    <h2>Lab Reports</h2>
+    <ul>
+      {% for lab_report in lab_reports %}
+      <li>{{ lab_report.title }} - Due: {{ lab_report.due_date }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+</div>
+{% endblock %}
