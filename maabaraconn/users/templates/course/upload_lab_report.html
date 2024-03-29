@@ -1,6 +1,26 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} {% block content %} {% comment %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const courseSelect = document.querySelector("#id_course"); // Adjust the selector as needed
+    courseSelect.addEventListener("change", function () {
+      const courseId = this.value;
+      fetch(`/ajax/get_laboratories/?course_id=${courseId}`)
+        .then((response) => response.json())
+        .then((data) => {
+          const labSelect = document.querySelector("#id_laboratory"); // Adjust the selector as needed
+          labSelect.innerHTML = ""; // Clear existing options
+          data.forEach((lab) => {
+            const option = new Option(lab.name, lab.id);
+            labSelect.options.add(option);
+          });
+        });
+    });
+  });
+</script>
+{% endcomment %}
+
 <div class="container">
-  <h2>Add Lab Report</h2>
+  <h2>Add Lab Report to:</h2>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %} {{ form.as_p }}
     <button type="submit" class="btn btn-primary">Submit</button>

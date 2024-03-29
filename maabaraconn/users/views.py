@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404, render, HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import render
 from django.contrib import messages
 from django.shortcuts import render, redirect
@@ -221,6 +221,13 @@ def upload_lab_report(request, course_id):
     else:
         form = LabReportForm(course_id=course_id)
     return render(request, 'course/upload_lab_report.html', {'form': form, 'course': course})
+
+
+def get_laboratories_for_course(request):
+    course_id = request.GET.get('course_id')
+    laboratories = list(Laboratory.objects.filter(
+        course_id=course_id).values('id', 'name'))
+    return JsonResponse(laboratories, safe=False)
 
 
 @login_required

@@ -32,4 +32,6 @@ urlpatterns = [
     path('add_laboratory/', views.add_laboratory, name='add_laboratory'),
     path('lab_content/', views.my_creations, name='view_lab_content'),
     path('course/<int:course_id>/', views.course_detail, name='course_detail'),
+    path('ajax/get_laboratories/',
+         views.get_laboratories_for_course, name='get_laboratories'),
 ]
