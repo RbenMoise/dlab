@@ -6,7 +6,9 @@
     <ul>
       {% for course in request.user.enrolled_courses.all %}
       <li>
-        <a href="{% url 'course_detail' course.id %}">{{ course.name }} - {{ course.code }}
+        <a href="{% url 'course_detail' course.id %}"
+          >{{ course.name }} - {{ course.code }}</a
+        >
         <form
           method="post"
           action="{% url 'unenroll_course' %}"
@@ -22,7 +24,7 @@
   </section>
 
   <section>
-    <h2>My Lab Reports</h2>
+    <h2>My Lab Reports:</h2>
     <ul>
       {% for report in lab_reports %}
       <li>
