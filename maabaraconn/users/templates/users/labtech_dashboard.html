@@ -8,11 +8,12 @@
 
 <!-- New Section for Adding Lab Reports -->
 <h3>Add a Lab Report</h3>
-<a href="{% url 'upload_lab_report' course_id=course_id %}">Add a Lab Report</a>
-
+{% comment %} <a id= 'addLabReportLink
+' href="{% url 'upload_lab_report' course_id=0 %}">Add a Lab Report</a> {% endcomment %}
+<a href="" id="addLabReportLink">Add a Lab hReport</a>
   {% csrf_token %}
   <label for="course">Select Course:</label>
-  <select name="course" id="course">
+  <select name="course_id" id="courseSelect">
     {% for course in courses %}
     <option value="{{ course.id }}">{{ course.name }}</option>
     {% endfor %}
@@ -20,6 +21,34 @@
   
   <input type="submit" value="Go to Add Report" />
 </form>
+
+{% comment %} the script section {% endcomment %}
+<script>
+  // Function to run when the page has loaded
+  document.addEventListener('DOMContentLoaded', function () {
+    // Select the dropdown and the link by their IDs
+    var courseSelect = document.getElementById('courseSelect');
+    var addLabReportLink = document.getElementById('addLabReportLink');
+  
+    // Function to update the link based on the selected course
+    function updateLink() {
+      var selectedCourseId = courseSelect.value;
+      var newHref = `{% url 'upload_lab_report' course_id=0 %}`.replace('0', selectedCourseId);
+      addLabReportLink.setAttribute('href', newHref);
+    }
+  
+    // Run the updateLink function whenever the selected course changes
+    courseSelect.addEventListener('change', updateLink);
+  
+    // Update the link immediately in case the page is reloaded
+    // and a course is already selected
+    updateLink();
+  });
+  </script>
+  
+  
+
+
 <a href="{% url 'add_laboratory' %}">Add a New Laboratory</a>
 
 <h2>My Lab Reports</h2>
@@ -34,7 +63,11 @@
 <h2>My Laboratories</h2>
 <ul>
   {% for laboratory in my_laboratories %}
-    <li>{{ laboratory.name }} - {{ laboratory.location }}</li>
+    <li>{{ laboratory.name }} - {{ laboratory.course }}<div>
+      {% comment %} <p>{{ laboratory.name }}</p> {% endcomment %}
+      <!-- Other laboratory details here -->
+      <a href="{% url 'delete_laboratory' laboratory.id %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this laboratory?');">Delete</a>
+  </div> </li>
   {% empty %}
     <p>No laboratories found.</p>
   {% endfor %}

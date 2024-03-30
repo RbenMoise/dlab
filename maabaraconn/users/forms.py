@@ -29,11 +29,11 @@ class CourseForm(forms.ModelForm):
 
 
 class LabReportForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(LabReportForm, self).__init__(*args, **kwargs)
-        # Assuming you have a relationship to Course in your LabReport model
-        # Adjust this queryset as needed
-        self.fields['course'].queryset = Course.objects.all()
+    # def __init__(self, *args, **kwargs):
+    #     super(LabReportForm, self).__init__(*args, **kwargs)
+    #     # Assuming you have a relationship to Course in your LabReport model
+    #     # Adjust this queryset as needed
+    #     self.fields['course'].queryset = Course.objects.all()
 
     def __init__(self, *args, **kwargs):
         course_id = kwargs.pop('course_id', None)
@@ -44,7 +44,7 @@ class LabReportForm(forms.ModelForm):
 
     class Meta:
         model = LabReport
-        fields = ['document', 'title', 'description', 'course', 'laboratory']
+        fields = ['document', 'title', 'description', 'laboratory']
 
 # If you have a Grade model and form
 

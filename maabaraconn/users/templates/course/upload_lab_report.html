@@ -20,7 +20,7 @@
 {% endcomment %}
 
 <div class="container">
-  <h2>Add Lab Report to:</h2>
+  <h2>Add Lab Report to: {{course.name}}</h2>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %} {{ form.as_p }}
     <button type="submit" class="btn btn-primary">Submit</button>

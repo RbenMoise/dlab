@@ -10,7 +10,11 @@ from .models import Course, LabReport, Laboratory, LabTemplate, Grade, User
 # Assume these forms are defined in forms.py
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
+from .models import Laboratory
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .forms import GradeForm, LaboratoryForm, UserRegistrationForm, CourseForm, LabReportForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Course
@@ -265,6 +269,16 @@ def my_creations(request):
     else:
         # Redirect or show an error message if the user is not a lab technician
         return render(request, 'error_page.html', {'error': 'You do not have permission to view this page.'})
+
+
+@login_required
+def delete_laboratory(request, lab_id):
+    # Ensure labtech owns the lab
+    laboratory = get_object_or_404(Laboratory, id=lab_id, creator=request.user)
+    laboratory.delete()
+    messages.success(request, 'Laboratory successfully deleted.')
+    # Replace 'labtech_dashboard' with the name of your dashboard URL
+    return redirect(reverse('labtech_dashboard'))
 
 
 def course_detail(request, course_id):
