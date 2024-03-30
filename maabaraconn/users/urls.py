@@ -38,5 +38,6 @@ urlpatterns = [
          views.delete_laboratory, name='delete_laboratory'),
     path('upload_lab_report/<int:course_id>/',
          views.upload_lab_report, name='upload_lab_report'),
+    path('student/dashboard/', views.student_dashboard, name='student_dashboard'),
 
 ]

@@ -22,6 +22,22 @@
   </section>
 
   <section>
+    <h2>My Lab Reports</h2>
+    <ul>
+      {% for report in lab_reports %}
+      <li>
+        <h3>{{ report.title }}</h3>
+        <p>Course: {{ report.course }}</p>
+        <p>Description: {{ report.description }}</p>
+        <!-- Add more details as needed -->
+      </li>
+      {% empty %}
+      <li>No lab reports available.</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section>
     <h2>Available Courses</h2>
     {% for course in available_courses %}
     <div>

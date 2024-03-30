@@ -286,3 +286,10 @@ def course_detail(request, course_id):
     # Assuming LabReport has a course FK
     lab_reports = LabReport.objects.filter(course=course)
     return render(request, 'users/course_detail.html', {'course': course, 'lab_reports': lab_reports})
+
+
+@login_required
+def student_dashboard(request):
+    enrolled_courses = request.user.enrolled_courses.all()
+    lab_reports = LabReport.objects.filter(course__in=enrolled_courses)
+    return render(request, 'users/student_dashboard.html', {'lab_reports': lab_reports})
