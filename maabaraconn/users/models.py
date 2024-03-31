@@ -66,7 +66,7 @@ class LabTemplate(models.Model):
         Course, on_delete=models.CASCADE, related_name='lab_templates')
     name = models.CharField(max_length=255)
     template_file = models.FileField(upload_to='lab_templates/')
-    laboratory = models.OneToOneField(Laboratory, on_delete=models.CASCADE)
+    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.name} Template for {self.course.name}"

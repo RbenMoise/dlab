@@ -317,7 +317,7 @@ def lab_template_upload(request, lab_id):
             lab_template = form.save(commit=False)
             lab_template.laboratory = lab
             lab_template.save()
-            return redirect('some_view_to_redirect_to')
+            return redirect('labtech_dashboard')
     else:
         form = LabTemplateForm(
             instance=lab.template if hasattr(lab, 'template') else None)
