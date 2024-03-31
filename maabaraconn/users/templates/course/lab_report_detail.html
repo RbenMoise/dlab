@@ -1,0 +1,11 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+  <h1>{{ lab_report.title }}</h1>
+  <p><strong>Description:</strong> {{ lab_report.description }}</p>
+  <p><strong>Due Date:</strong> {{ lab_report.due_date }}</p>
+  <!-- Add more fields as needed based on your LabReport model -->
+
+  <!-- Optionally, add a link back to the dashboard or course page -->
+  <a href="{% url 'student_dashboard' %}">Back to Dashboard</a>
+</div>
+{% endblock %}

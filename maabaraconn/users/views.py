@@ -290,6 +290,12 @@ def course_detail(request, course_id):
 
 @login_required
 def student_dashboard(request):
-    enrolled_courses = request.user.enrolled_courses.all()
+    enrolled_courses = request.user.enrolled_courses.prefetch_related(
+        'lab_reports').all()
     lab_reports = LabReport.objects.filter(course__in=enrolled_courses)
     return render(request, 'users/student_dashboard.html', {'lab_reports': lab_reports})
+
+
+def lab_report_detail(request, lab_report_id):
+    lab_report = get_object_or_404(LabReport, pk=lab_report_id)
+    return render(request, 'course/lab_report_detail.html', {'lab_report': lab_report})

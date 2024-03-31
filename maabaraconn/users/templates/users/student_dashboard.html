@@ -24,25 +24,30 @@
   </section>
 
   <section>
-    <h2>My Lab Reports:</h2>
-    <ul>
-      {% for report in lab_reports %}
-      <li>
-        <h3>{{ report.title }}</h3>
-        <p>Course: {{ report.course }}</p>
-        <p>Description: {{ report.description }}</p>
-        <!-- Add more details as needed -->
-      </li>
+    <h2>Lab Reports:</h2>
+    {% for course in request.user.enrolled_courses.all %}
+    <div>
+      <h3>{{ course.name }} - {{ course.code }}</h3>
+      {% for lab_report in course.lab_reports.all %}
+      <p>
+        <a href="{% url 'lab_report_detail' lab_report.id %}">
+          {{ lab_report.title }}
+        </a>
+        - Due: {{ lab_report.due_date }}
+      </p>
+      <p>Course: {{ lab_report.course }}</p>
+      <p>Description: {{ lab_report.description }}</p>
       {% empty %}
-      <li>No lab reports available.</li>
+      <p>No lab reports available for this course.</p>
       {% endfor %}
-    </ul>
+    </div>
+    {% endfor %}
   </section>
 
   <section>
     <h2>Available Courses</h2>
     {% for course in available_courses %}
-    <div>
+    <div style="display: flex">
       <h3>{{ course.name }}</h3>
       <p>{{ course.description }}</p>
       {% if course not in request.user.enrolled_courses.all %}
