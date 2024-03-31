@@ -63,14 +63,30 @@
 <h2>My Laboratories</h2>
 <ul>
   {% for laboratory in my_laboratories %}
-    <li>{{ laboratory.name }} - {{ laboratory.course }}<div>
-      {% comment %} <p>{{ laboratory.name }}</p> {% endcomment %}
-      <!-- Other laboratory details here -->
-      <a href="{% url 'delete_laboratory' laboratory.id %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this laboratory?');">Delete</a>
-  </div> </li>
+    <li>
+      {{ laboratory.name }} - {{ laboratory.course.name }}
+      <div>
+        <!-- Other laboratory details here -->
+        <a href="{% url 'delete_laboratory' laboratory.id %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this laboratory?');">Delete</a>
+        <!-- Link to upload template for this laboratory -->
+        <a href="{% url 'lab_template_upload' lab_id=laboratory.id %}" class="btn btn-primary">Upload Template</a>
+      </div>
+    </li>
   {% empty %}
     <p>No laboratories found.</p>
   {% endfor %}
 </ul>
+
+
+<div class="container">
+  <h2>Lab Templates</h2>
+  <ul>
+      {% for template in templates %}
+      <li>
+          <a href="{{ template.template_file.url }}">{{ template.name }}</a> - {{ template.course.name }}
+      </li>
+      {% endfor %}
+  </ul>
+</div>
 
 {% endblock %}

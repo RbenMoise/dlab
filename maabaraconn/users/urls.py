@@ -41,5 +41,10 @@ urlpatterns = [
     path('student/dashboard/', views.student_dashboard, name='student_dashboard'),
     path('lab-reports/<int:lab_report_id>/',
          views.lab_report_detail, name='lab_report_detail'),
+    #     path('upload_template/', views.upload_lab_template,
+    #          name='upload_lab_template'),
+    path('list_templates/', views.list_lab_templates, name='list_lab_templates'),
+    path('lab/<int:lab_id>/upload_template/',
+         views.lab_template_upload, name='lab_template_upload'),
 
 ]

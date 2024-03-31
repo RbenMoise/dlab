@@ -62,15 +62,22 @@ class Laboratory(models.Model):
 
 
 class LabTemplate(models.Model):
-    laboratory = models.OneToOneField(
-        Laboratory, on_delete=models.CASCADE, related_name='template')
+    course = models.ForeignKey(
+        Course, on_delete=models.CASCADE, related_name='lab_templates')
+    name = models.CharField(max_length=255)
     template_file = models.FileField(upload_to='lab_templates/')
+    laboratory = models.OneToOneField(Laboratory, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Template for {self.laboratory.title}"
+        return f"{self.name} Template for {self.course.name}"
 
 
 class LabReport(models.Model):
+    REPORT_TYPE_CHOICES = [
+        ('IND', 'Individual'),
+        ('GRP', 'Group'),]
+    report_type = models.CharField(
+        max_length=3, choices=REPORT_TYPE_CHOICES, default='IND')
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='lab_reports')
     course = models.ForeignKey(
@@ -84,6 +91,8 @@ class LabReport(models.Model):
     document = models.FileField(upload_to='lab_reports/')
     submitted_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=100, default='Pending')
+    template = models.ForeignKey(
+        LabTemplate, on_delete=models.SET_NULL, null=True, blank=True, related_name='lab_reports')
 
     def __str__(self):
         return f"Report by {self.student.username} for {self.laboratory.title}"

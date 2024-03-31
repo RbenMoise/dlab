@@ -15,9 +15,10 @@ from django.urls import reverse
 from .models import Laboratory
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import GradeForm, LaboratoryForm, UserRegistrationForm, CourseForm, LabReportForm
+from .forms import GradeForm, LabTemplateForm, LaboratoryForm, UserRegistrationForm, CourseForm, LabReportForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Course
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 
 def register(request):
@@ -299,3 +300,32 @@ def student_dashboard(request):
 def lab_report_detail(request, lab_report_id):
     lab_report = get_object_or_404(LabReport, pk=lab_report_id)
     return render(request, 'course/lab_report_detail.html', {'lab_report': lab_report})
+
+
+def is_labtech(user):
+    return user.role == User.Role.LAB_TECH
+
+
+@login_required
+@user_passes_test(is_labtech)
+def lab_template_upload(request, lab_id):
+    lab = Laboratory.objects.get(id=lab_id)
+    if request.method == 'POST':
+        form = LabTemplateForm(request.POST, request.FILES, instance=lab.template if hasattr(
+            lab, 'template') else None)
+        if form.is_valid():
+            lab_template = form.save(commit=False)
+            lab_template.laboratory = lab
+            lab_template.save()
+            return redirect('some_view_to_redirect_to')
+    else:
+        form = LabTemplateForm(
+            instance=lab.template if hasattr(lab, 'template') else None)
+    return render(request, 'course/upload_lab_template.html', {'form': form})
+
+
+@login_required
+# @user_passes_test(is_labtech)
+def list_lab_templates(request):
+    templates = LabTemplate.objects.all()
+    return render(request, 'your_app/list_lab_templates.html', {'templates': templates})

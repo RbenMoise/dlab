@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import Grade, Laboratory, User, Course, LabReport
+from .models import Grade, LabTemplate, Laboratory, User, Course, LabReport
 
 
 from .models import User
@@ -29,23 +29,18 @@ class CourseForm(forms.ModelForm):
 
 
 class LabReportForm(forms.ModelForm):
-    # def __init__(self, *args, **kwargs):
-    #     super(LabReportForm, self).__init__(*args, **kwargs)
-    #     # Assuming you have a relationship to Course in your LabReport model
-    #     # Adjust this queryset as needed
-    #     self.fields['course'].queryset = Course.objects.all()
-
     def __init__(self, *args, **kwargs):
         course_id = kwargs.pop('course_id', None)
         super(LabReportForm, self).__init__(*args, **kwargs)
         if course_id:
             self.fields['laboratory'].queryset = Laboratory.objects.filter(
                 course_id=course_id)
+            self.fields['template'].queryset = LabTemplate.objects.filter(
+                course_id=course_id)
 
     class Meta:
         model = LabReport
-        fields = ['document', 'title', 'description', 'laboratory']
-
+        fields = ['title', 'description', 'laboratory', 'template', 'document']
 # If you have a Grade model and form
 
 
@@ -59,3 +54,9 @@ class GradeForm(forms.ModelForm):
     class Meta:
         model = Grade
         fields = ['score', 'feedback']
+
+
+class LabTemplateForm(forms.ModelForm):
+    class Meta:
+        model = LabTemplate
+        fields = ['course', 'name', 'template_file']
