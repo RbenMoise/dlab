@@ -132,8 +132,10 @@ def dashboard(request):
         courses = Course.objects.all()
         course_id = Course.objects.first().id
         my_laboratories = Laboratory.objects.filter(creator=request.user)
+        templates = LabTemplate.objects.all()
         my_lab_reports = LabReport.objects.filter(creator=request.user)
         context = {
+            'templates': templates,
             'my_laboratories': my_laboratories,
             'my_lab_reports': my_lab_reports,
             'course_id': course_id,
@@ -324,8 +326,19 @@ def lab_template_upload(request, lab_id):
     return render(request, 'course/upload_lab_template.html', {'form': form})
 
 
+# @login_required
+# # @user_passes_test(is_labtech)
+# def list_lab_templates(request):
+#     templates = LabTemplate.objects.all()
+#     return render(request, 'users/labtech_dashboard.html', {'templates': templates})
+
 @login_required
-# @user_passes_test(is_labtech)
-def list_lab_templates(request):
-    templates = LabTemplate.objects.all()
-    return render(request, 'your_app/list_lab_templates.html', {'templates': templates})
+def LabTemplateDelete(request, template_id):
+    # Ensure only lab technicians can delete templates
+    if request.user.role != request.user.Role.LAB_TECH:
+        return HttpResponseForbidden()
+
+    template = get_object_or_404(LabTemplate, id=template_id)
+    template.delete()
+    # Redirect to the page where templates are listed, adjust the URL as necessary
+    return redirect('labtech_dashboard')

@@ -43,8 +43,10 @@ urlpatterns = [
          views.lab_report_detail, name='lab_report_detail'),
     #     path('upload_template/', views.upload_lab_template,
     #          name='upload_lab_template'),
-    path('list_templates/', views.list_lab_templates, name='list_lab_templates'),
+    #     path('list_templates/', views.list_lab_templates, name='list_lab_templates'),
     path('lab/<int:lab_id>/upload_template/',
          views.lab_template_upload, name='lab_template_upload'),
+    path('lab/template/delete/<int:template_id>/',
+         views.LabTemplateDelete, name='lab_template_delete'),
 
 ]

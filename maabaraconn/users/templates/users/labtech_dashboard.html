@@ -84,6 +84,7 @@
       {% for template in templates %}
       <li>
           <a href="{{ template.template_file.url }}">{{ template.name }}</a> - {{ template.course.name }}
+          <a href="{% url 'lab_template_delete' template.id %}" onclick="return confirm('Are you sure?');">Delete</a>
       </li>
       {% endfor %}
   </ul>
