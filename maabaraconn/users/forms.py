@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import Grade, LabTemplate, Laboratory, User, Course, LabReport
+from .models import Grade, LabTemplate, Laboratory, SectionType, TemplateSection, User, Course, LabReport
 
 
 from .models import User
@@ -59,4 +59,20 @@ class GradeForm(forms.ModelForm):
 class LabTemplateForm(forms.ModelForm):
     class Meta:
         model = LabTemplate
-        fields = ['course', 'name', 'template_file']
+        fields = ['course', 'name', ]
+
+
+class TemplateSectionForm(forms.ModelForm):
+    class Meta:
+        model = TemplateSection
+        fields = ['section_type', 'content', 'visible_to_students']
+
+
+SectionFormset = forms.inlineformset_factory(
+    LabTemplate, TemplateSection, form=TemplateSectionForm, extra=1, can_delete=True)
+
+
+class SectionTypeForm(forms.ModelForm):
+    class Meta:
+        model = SectionType
+        fields = ['name', 'default_content']

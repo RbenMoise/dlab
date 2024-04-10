@@ -48,5 +48,14 @@ urlpatterns = [
          views.lab_template_upload, name='lab_template_upload'),
     path('lab/template/delete/<int:template_id>/',
          views.LabTemplateDelete, name='lab_template_delete'),
+    path('laboratories/', views.laboratories_list, name='laboratories_list'),
+    #     path('lab_template/create/', views.create_lab_template, name='create_lab_template'),
+    path('lab_template/<int:lab_template_id>/add_section/',
+         views.add_sections_to_template, name='add_sections_to_template'),
+    path('add_section_type/', views.add_section_type, name='add_section_type'),
+    path('delete_section_type/<int:section_type_id>/',
+         views.delete_section_type, name='delete_section_type'),
+
+
 
 ]

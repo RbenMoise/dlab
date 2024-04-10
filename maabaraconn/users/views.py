@@ -1,12 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.forms import modelformset_factory
 from django.shortcuts import get_object_or_404, render, HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden, JsonResponse
+from django.http import HttpResponseForbidden, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, ListView, UpdateView
-from .models import Course, LabReport, Laboratory, LabTemplate, Grade, User
+from .models import Course, LabReport, Laboratory, LabTemplate, Grade, SectionType, TemplateSection, User
 # Assume these forms are defined in forms.py
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
@@ -15,7 +16,7 @@ from django.urls import reverse
 from .models import Laboratory
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import GradeForm, LabTemplateForm, LaboratoryForm, UserRegistrationForm, CourseForm, LabReportForm
+from .forms import GradeForm, LabTemplateForm, LaboratoryForm, SectionFormset, SectionTypeForm, TemplateSectionForm, UserRegistrationForm, CourseForm, LabReportForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Course
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -134,8 +135,10 @@ def dashboard(request):
         my_laboratories = Laboratory.objects.filter(creator=request.user)
         templates = LabTemplate.objects.all()
         my_lab_reports = LabReport.objects.filter(creator=request.user)
+        section_types = SectionType.objects.all()
         context = {
             'templates': templates,
+            'section_types': section_types,
             'my_laboratories': my_laboratories,
             'my_lab_reports': my_lab_reports,
             'course_id': course_id,
@@ -342,3 +345,77 @@ def LabTemplateDelete(request, template_id):
     template.delete()
     # Redirect to the page where templates are listed, adjust the URL as necessary
     return redirect('labtech_dashboard')
+
+
+def laboratories_list(request):
+    laboratories = Laboratory.objects.prefetch_related('lab_templates').all()
+    return render(request, 'laboratories_list.html', {'laboratories': laboratories})
+
+
+# def create_lab_template(request):
+#     if request.method == 'POST':
+#         form = LabTemplateForm(request.POST)
+#         if form.is_valid():
+#             lab_template = form.save()
+#             return redirect('add_sections_to_template', lab_template_id=lab_template.id)
+#     else:
+#         form = LabTemplateForm()
+#     return render(request, 'course/create_lab_template.html', {'form': form})
+
+
+def add_sections_to_template(request, lab_template_id):
+    template = LabTemplate.objects.get(id=lab_template_id)
+    SectionFormset = modelformset_factory(
+        TemplateSection, form=TemplateSectionForm, )
+    if request.method == 'POST':
+        formset = SectionFormset(
+            request.POST, queryset=TemplateSection.objects.none())
+        if formset.is_valid():
+            sections = formset.save(commit=False)
+            for section in sections:
+                section.lab_template = template
+                section.save()
+            # Redirect after POST
+            print("Redirecting to labtech_dashboard")
+            return redirect('labtech_dashboard', )
+    else:
+        # print(formset.errors)
+        formset = SectionFormset(queryset=template.sections.all())
+    return render(request, 'course/add_sections_to_template.html', {'formset': formset, 'template': template})
+
+
+def create_lab_template(request, lab_template_id):
+    template = LabTemplate.objects.get(id=lab_template_id)
+    if request.method == 'POST':
+        form = LabTemplateForm(request.POST)
+        if form.is_valid():
+            lab_template = form.save()
+            section_formset = SectionFormset(
+                request.POST, instance=lab_template)
+            if section_formset.is_valid():
+                section_formset.save()
+                return redirect('add_sections_to_template', lab_template_id=template.id)
+    else:
+        form = LabTemplateForm()
+        section_formset = SectionFormset()
+    return render(request, 'create_lab_template.html', {
+        'form': form,
+        'section_formset': section_formset,
+    })
+
+
+def add_section_type(request):
+    if request.method == 'POST':
+        form = SectionTypeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('labtech_dashboard')
+    else:
+        form = SectionTypeForm()
+    return render(request, 'course/add_section_type.html', {'form': form})
+
+
+def delete_section_type(request, section_type_id):
+    if request.method == 'POST':
+        SectionType.objects.filter(id=section_type_id).delete()
+        return HttpResponseRedirect(reverse('labtech_dashboard'))

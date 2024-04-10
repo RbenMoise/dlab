@@ -83,11 +83,50 @@
   <ul>
       {% for template in templates %}
       <li>
-          <a href="{{ template.template_file.url }}">{{ template.name }}</a> - {{ template.course.name }}
+          <a href="{% url 'add_sections_to_template' lab_template_id=template.id %}">{{ template.name }}</a>
+
+          {% comment %} <a href="{{ template.template_file.url }}">{{ template.name }}</a> - {{ template.course.name }} {% endcomment %}
           <a href="{% url 'lab_template_delete' template.id %}" onclick="return confirm('Are you sure?');">Delete</a>
       </li>
       {% endfor %}
   </ul>
 </div>
+
+<div class="container">
+  <h2>Laboratories and Their Lab Templates</h2>
+  {% for laboratory in my_laboratories %}
+  <div class="laboratory">
+    <h3>{{ laboratory.name }}</h3>
+    <ul>
+      {% for template in laboratory.lab_templates.all %}
+      <li>
+          <a href="{{ template.template_file.url }}">{{ template.name }}</a> - {{ template.course.name }}
+          <a href="{% url 'lab_template_delete' template.id %}" onclick="return confirm('Are you sure?');">Delete</a>
+      </li>
+      {% empty %}
+      <li>No lab templates available for this laboratory.</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Example within labtech_dashboard.html -->
+
+<a href="{% url 'add_section_type' %}">Add Section Type</a>
+<!-- Include other links and content as needed -->
+<h3>Section Types</h3>
+<ul>
+  {% for section_type in section_types %}
+  <li>
+    {{ section_type.name }}
+    <form action="{% url 'delete_section_type' section_type.id %}" method="post" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit" onclick="return confirm('Are you sure?');">Delete</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+
 
 {% endblock %}

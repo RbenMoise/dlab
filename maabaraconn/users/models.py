@@ -65,11 +65,45 @@ class LabTemplate(models.Model):
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name='lab_templates')
     name = models.CharField(max_length=255)
-    template_file = models.FileField(upload_to='lab_templates/')
-    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE)
+    # template_file = models.FileField(upload_to='lab_templates/')
+    laboratory = models.ForeignKey(
+        Laboratory, on_delete=models.CASCADE, related_name='lab_templates')
 
     def __str__(self):
         return f"{self.name} Template for {self.course.name}"
+
+
+class SectionType(models.Model):
+    name = models.CharField(max_length=100)
+    default_content = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class TemplateSection(models.Model):
+    lab_template = models.ForeignKey(
+        LabTemplate, on_delete=models.CASCADE, related_name='sections')
+    title = models.CharField(max_length=255)
+    # order = models.IntegerField(
+    # help_text="The order in which the section appears in the template")
+    content = models.TextField()
+    visible_to_students = models.BooleanField(default=True)
+    section_type = models.ForeignKey(SectionType, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.title} for this {self.lab_template}'
+
+
+class StudentResponse(models.Model):
+    section = models.ForeignKey(
+        TemplateSection, on_delete=models.CASCADE, related_name='responses')
+    student = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='responses')
+    response_text = models.TextField()
+
+    def __str__(self):
+        return f"Response by {self.student} for {self.section}"
 
 
 class LabReport(models.Model):
