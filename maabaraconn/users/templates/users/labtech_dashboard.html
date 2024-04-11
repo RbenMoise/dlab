@@ -84,7 +84,7 @@
       {% for template in templates %}
       <li>
           <a href="{% url 'add_sections_to_template' lab_template_id=template.id %}">{{ template.name }}</a>
-
+          {{ template.title }} - <a href="{% url 'view_template_details' template.id %}">View Details</a>
           {% comment %} <a href="{{ template.template_file.url }}">{{ template.name }}</a> - {{ template.course.name }} {% endcomment %}
           <a href="{% url 'lab_template_delete' template.id %}" onclick="return confirm('Are you sure?');">Delete</a>
       </li>

@@ -55,6 +55,8 @@ urlpatterns = [
     path('add_section_type/', views.add_section_type, name='add_section_type'),
     path('delete_section_type/<int:section_type_id>/',
          views.delete_section_type, name='delete_section_type'),
+    path('lab_template/<int:lab_template_id>/',
+         views.view_template_details, name='view_template_details'),
 
 
 

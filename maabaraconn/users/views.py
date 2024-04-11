@@ -419,3 +419,14 @@ def delete_section_type(request, section_type_id):
     if request.method == 'POST':
         SectionType.objects.filter(id=section_type_id).delete()
         return HttpResponseRedirect(reverse('labtech_dashboard'))
+
+
+def view_template_details(request, lab_template_id):
+    template = get_object_or_404(LabTemplate, id=lab_template_id)
+    sections = template.sections.all()  # Fetch all related sections
+
+    context = {
+        'template': template,
+        'sections': sections,
+    }
+    return render(request, 'users/template_details.html', context)

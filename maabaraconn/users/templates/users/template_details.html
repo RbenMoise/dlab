@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+<!-- Extend your base template if you have one -->
+
+{% block content %}
+
+<!-- Displaying the sections -->
+
+<h2>Template: {{ template.name }}</h2>
+
+{% if sections %}
+<ul>
+  {% for section in sections %}
+  <li>
+    {% comment %}
+    <h3>{{ section.title }}</h3>
+    {% endcomment %}
+    <h3>{{ section.section_type }}</h3>
+    <p>Visible to Students: {{ section.visible_to_students }}</p>
+    <p>Content: {{ section.content }}</p>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No sections have been added to this template yet.</p>
+{% endif %} {% endblock %}
