@@ -11,12 +11,17 @@
 <ul>
   {% for section in sections %}
   <li>
-    {% comment %}
-    <h3>{{ section.title }}</h3>
-    {% endcomment %}
     <h3>{{ section.section_type }}</h3>
     <p>Visible to Students: {{ section.visible_to_students }}</p>
     <p>Content: {{ section.content }}</p>
+    <!-- Display section details here -->
+    <form
+      action="{% url 'delete_section' lab_template_id=template.id section_id=section.id %}"
+      method="post"
+    >
+      {% csrf_token %}
+      <input type="submit" value="Delete" />
+    </form>
   </li>
   {% endfor %}
 </ul>

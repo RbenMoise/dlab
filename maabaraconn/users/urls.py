@@ -57,7 +57,8 @@ urlpatterns = [
          views.delete_section_type, name='delete_section_type'),
     path('lab_template/<int:lab_template_id>/',
          views.view_template_details, name='view_template_details'),
-
+    path('lab_template/<int:lab_template_id>/delete_section/<int:section_id>/',
+         views.delete_section, name='delete_section'),
 
 
 ]

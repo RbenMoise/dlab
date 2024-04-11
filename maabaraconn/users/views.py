@@ -430,3 +430,14 @@ def view_template_details(request, lab_template_id):
         'sections': sections,
     }
     return render(request, 'users/template_details.html', context)
+
+
+def delete_section(request, lab_template_id, section_id):
+    section = get_object_or_404(
+        TemplateSection, id=section_id, lab_template_id=lab_template_id)
+    if request.method == "POST":
+        section.delete()
+        return redirect('view_template_details', lab_template_id=lab_template_id)
+    else:
+        # Confirm deletion page (optional)
+        return render(request, 'your_app_name/confirm_delete.html', {'section': section})
