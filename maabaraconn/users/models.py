@@ -143,3 +143,13 @@ class Grade(models.Model):
 
     def __str__(self):
         return f"Grade for {self.lab_report.student.username} - {self.score}/100"
+
+
+# class LabReport(models.Model):
+#     title = models.CharField(max_length=255)
+#     description = models.TextField()
+#     due_date = models.DateField()
+#     template = models.FileField(upload_to='templates/')
+#     submitted_file = models.FileField(
+#         upload_to='submissions/', null=True, blank=True)
+#     # Additional fields as needed

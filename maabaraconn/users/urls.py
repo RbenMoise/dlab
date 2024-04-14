@@ -59,6 +59,8 @@ urlpatterns = [
          views.view_template_details, name='view_template_details'),
     path('lab_template/<int:lab_template_id>/delete_section/<int:section_id>/',
          views.delete_section, name='delete_section'),
+    path('submit_lab_report/<int:lab_report_id>/',
+         views.submit_lab_report, name='submit_lab_report'),
 
 
 ]

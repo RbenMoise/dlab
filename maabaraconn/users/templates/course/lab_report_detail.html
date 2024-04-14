@@ -1,17 +1,20 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} {% load custom_filters %} {{ mydict|get_item:"mykey"
+}} {% block content %}
 <div class="container">
   <h1>{{ lab_report.title }}</h1>
   <p><strong>Description:</strong> {{ lab_report.description }}</p>
-  <p><strong>Due Date:</strong> {{ lab_report.due_date }}</p>
-  <!-- Add more fields as needed based on your LabReport model -->
-  {% if lab_report.template %}
-  <p>
-    <strong>Submission Template:</strong>
-    <a href="{{ lab_report.template.template_file.url }}">Download Template</a>
-  </p>
-  {% endif %}
+  <form action="" method="post">
+    {% csrf_token %} {% for section in sections %}
+    <div>
+      <h3>{{ section.title }}</h3>
+      <textarea name="response_{{ section.id }}" rows="4" cols="50">
+{{ responses|get_item:section.id|default:"" }}</textarea
+      >
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-success">Submit Responses</button>
+  </form>
 
-  <!-- Optionally, add a link back to the dashboard or course page -->
   <a href="{% url 'student_dashboard' %}">Back to Dashboard</a>
 </div>
 {% endblock %}

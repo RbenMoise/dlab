@@ -40,7 +40,7 @@ class LabReportForm(forms.ModelForm):
 
     class Meta:
         model = LabReport
-        fields = ['title', 'description', 'laboratory', 'template', 'document']
+        fields = ['title', 'description', 'laboratory', 'template',]
 # If you have a Grade model and form
 
 

@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, ListView, UpdateView
-from .models import Course, LabReport, Laboratory, LabTemplate, Grade, SectionType, TemplateSection, User
+from .models import Course, LabReport, Laboratory, LabTemplate, Grade, SectionType, StudentResponse, TemplateSection, User
 # Assume these forms are defined in forms.py
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
@@ -302,9 +302,30 @@ def student_dashboard(request):
     return render(request, 'users/student_dashboard.html', {'lab_reports': lab_reports})
 
 
+@login_required
 def lab_report_detail(request, lab_report_id):
     lab_report = get_object_or_404(LabReport, pk=lab_report_id)
-    return render(request, 'course/lab_report_detail.html', {'lab_report': lab_report})
+    template = lab_report.template
+    sections = template.sections.all() if template else []
+
+    if request.method == 'POST':
+        for section in sections:
+            response_text = request.POST.get(f'response_{section.id}', '')
+            StudentResponse.objects.update_or_create(
+                section=section, student=request.user,
+                defaults={'response_text': response_text}
+            )
+        return redirect('student_dashboard')
+
+    responses = {response.section.id: response.response_text for response in
+                 StudentResponse.objects.filter(student=request.user, section__in=sections)}
+
+    context = {
+        'lab_report': lab_report,
+        'sections': sections,
+        'responses': responses,
+    }
+    return render(request, 'course/lab_report_detail.html', context)
 
 
 def is_labtech(user):
@@ -441,3 +462,17 @@ def delete_section(request, lab_template_id, section_id):
     else:
         # Confirm deletion page (optional)
         return render(request, 'your_app_name/confirm_delete.html', {'section': section})
+
+
+@login_required
+def submit_lab_report(request, lab_report_id):
+    lab_report = get_object_or_404(LabReport, pk=lab_report_id)
+    if request.method == 'POST' and request.FILES['submitted_file']:
+        # Handle the file upload
+        submitted_file = request.FILES['submitted_file']
+        # Assume you have a model field in LabReport to store submitted files
+        lab_report.submitted_file = submitted_file
+        lab_report.save()
+        messages.success(request, "Lab report submitted successfully.")
+        return redirect('student_dashboard')
+    return redirect('lab_report_detail', lab_report_id=lab_report_id)
