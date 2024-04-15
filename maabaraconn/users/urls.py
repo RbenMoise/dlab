@@ -61,6 +61,9 @@ urlpatterns = [
          views.delete_section, name='delete_section'),
     path('submit_lab_report/<int:lab_report_id>/',
          views.submit_lab_report, name='submit_lab_report'),
+    path('lab-reports/grading/', views.lab_reports_for_grading,
+         name='lab_reports_for_grading'),
+    path('lab-reports/grades/', views.view_grades, name='view_grades'),
 
 
 ]

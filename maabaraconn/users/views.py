@@ -475,4 +475,29 @@ def submit_lab_report(request, lab_report_id):
         lab_report.save()
         messages.success(request, "Lab report submitted successfully.")
         return redirect('student_dashboard')
+
+    # Redirect to the detail page if the conditions are not met
     return redirect('lab_report_detail', lab_report_id=lab_report_id)
+
+
+@login_required
+def lab_reports_for_grading(request):
+    # Assuming lab technicians have broader access, adjust the filter as needed.
+    if request.user.role == User.Role.LAB_TECH:
+        reports = LabReport.objects.filter(
+            status='Pending').order_by('submitted_at')
+    else:
+        reports = LabReport.objects.none()  # No access for other roles
+
+    return render(request, 'course/grading_list.html', {'reports': reports})
+
+
+@login_required
+def view_grades(request):
+    if request.user.role == User.Role.LAB_TECH:
+        reports = LabReport.objects.filter(grade__isnull=False).select_related(
+            'student').order_by('-submitted_at')
+    else:
+        reports = LabReport.objects.none()  # No access for other roles
+
+    return render(request, 'course/view_grades.html', {'reports': reports})

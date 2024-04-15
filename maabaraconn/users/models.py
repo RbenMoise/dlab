@@ -129,7 +129,7 @@ class LabReport(models.Model):
         LabTemplate, on_delete=models.SET_NULL, null=True, blank=True, related_name='lab_reports')
 
     def __str__(self):
-        return f"Report by {self.student.username} for {self.laboratory.title}"
+        return f"Report by {self.creator} for {self.laboratory.name}"
 
 
 class Grade(models.Model):
