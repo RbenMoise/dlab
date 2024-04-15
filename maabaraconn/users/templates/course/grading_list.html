@@ -1,0 +1,30 @@
+<!-- lab_reports/grading_list.html -->
+{% extends "base.html" %} {% block content %}
+<h2>Pending Lab Reports for Grading</h2>
+<table>
+  <tr>
+    <th>Title</th>
+    <th>Submitted By</th>
+    <th>Submitted At</th>
+    <th>Laboratory</th>
+    <th>Document</th>
+    <th>Action</th>
+  </tr>
+  {% for report in reports %}
+  <tr>
+    <td>{{ report.title }}</td>
+    <td>{{ report.student }}</td>
+    <td>{{ report.submitted_at }}</td>
+    <td>{{ report.laboratory.name }}</td>
+    {% comment %}
+    <td><a href="{{ report.document.url }}">Download</a></td>
+    {% endcomment %}
+    <td><a href="{% url 'grade_report' report.id %}">Grade</a></td>
+  </tr>
+  {% empty %}
+  <tr>
+    <td colspan="6">No lab reports pending grading.</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
