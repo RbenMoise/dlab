@@ -1,0 +1,13 @@
+{% extends "base.html" %} {% block content %}
+<h2>My Lab Reports</h2>
+{% for response in student_responses %}
+<div>
+  <h3>Lab Report: {{ response.lab_report.title }}</h3>
+  <p>{{ response.lab_report.description }}</p>
+  <strong>Your Response:</strong>
+  <p>{{ response.response_text }}</p>
+  <a href="{% url 'response-detail' response.id %}">View Details</a>
+</div>
+{% empty %}
+<p>You have not submitted any responses yet.</p>
+{% endfor %} {% endblock %}

@@ -132,6 +132,19 @@ class LabReport(models.Model):
         return f"Report by {self.creator} for {self.laboratory.name}"
 
 
+class StudentResponse(models.Model):
+    section = models.ForeignKey(
+        TemplateSection, on_delete=models.CASCADE, related_name='responses')
+    student = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='responses')
+    response_text = models.TextField()
+    lab_report = models.ForeignKey(
+        LabReport, on_delete=models.CASCADE, related_name='responses')
+
+    def __str__(self):
+        return f"Response by {self.student} for {self.section}"
+
+
 class Grade(models.Model):
     lab_report = models.OneToOneField(
         LabReport, on_delete=models.CASCADE, related_name='grade')

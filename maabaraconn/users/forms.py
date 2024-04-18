@@ -76,3 +76,12 @@ class SectionTypeForm(forms.ModelForm):
     class Meta:
         model = SectionType
         fields = ['name', 'default_content']
+
+
+class GradeForm(forms.ModelForm):
+    class Meta:
+        model = Grade
+        fields = ['score', 'feedback']
+        widgets = {
+            'feedback': forms.Textarea(attrs={'cols': 40, 'rows': 5})
+        }

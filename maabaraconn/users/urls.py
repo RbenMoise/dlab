@@ -64,6 +64,10 @@ urlpatterns = [
     path('lab-reports/grading/', views.lab_reports_for_grading,
          name='lab_reports_for_grading'),
     path('lab-reports/grades/', views.view_grades, name='view_grades'),
+    # urls.py
 
-
+    path('lab-report/<int:lab_report_id>/responses/',
+         views.student_lab_report_responses, name='student_lab_report_responses'),
+    path('responses/<int:lab_report_id>/', views.student_lab_report_responses,
+         name='student_lab_report_responses'),
 ]

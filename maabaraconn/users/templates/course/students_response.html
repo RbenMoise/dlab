@@ -1,0 +1,12 @@
+{% extends "base.html" %} {% block content %}
+<h2>Responses for {{ lab_report.title }}</h2>
+
+{% if responses %}
+<ul>
+  {% for response in responses %}
+  <li>{{ response.response_text }}</li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No responses submitted yet.</p>
+{% endif %} {% endblock %}

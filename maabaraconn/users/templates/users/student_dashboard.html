@@ -37,6 +37,11 @@
       </p>
       <p>Course: {{ lab_report.course }}</p>
       <p>Description: {{ lab_report.description }}</p>
+      <p>
+        <a href="{% url 'student_lab_report_responses' lab_report.id %}"
+          >View Your Responses</a
+        >
+      </p>
       {% empty %}
       <p>No lab reports available for this course.</p>
       {% endfor %}
