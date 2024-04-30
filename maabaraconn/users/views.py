@@ -1,3 +1,4 @@
+from .models import LabReport, StudentResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.forms import modelformset_factory
 from django.shortcuts import get_object_or_404, render, HttpResponse
@@ -494,16 +495,34 @@ def submit_lab_report(request, lab_report_id):
 #     }
 #     return render(request, 'course/grading_list.html', context)
 
+# this is when the labtech is viewing the response
+# from django.shortcuts import render
+
+
+# tech can vie which stident submmited their work
 @login_required
 def lab_reports_for_grading(request):
-    # Assuming lab technicians have broader access, adjust the filter as needed.
     if request.user.role == User.Role.LAB_TECH:
         reports = LabReport.objects.filter(
-            status='Pending').order_by('submitted_at')
-    else:
-        reports = LabReport.objects.none()  # No access for other roles
+            status='Pending').order_by('submitted_at').prefetch_related('responses')
 
-    return render(request, 'course/grading_list.html', {'reports': reports})
+        # Prepare data to display
+        report_list = [{
+            'id': report.id,
+            'title': report.title,
+            'laboratory': report.laboratory.name,
+            'document': report.document,
+            'submitted_at': report.submitted_at,
+            'responses': [{
+                # Adjust this line to match your user model
+                'submitted_by': response.student.get_full_name(),
+                'response_id': response.id
+            } for response in report.responses.all()]
+        } for report in reports]
+    else:
+        report_list = []
+
+    return render(request, 'course/grading_list.html', {'reports': report_list})
 
 
 @login_required
@@ -515,70 +534,6 @@ def view_grades(request):
         reports = LabReport.objects.none()  # No access for other roles
 
     return render(request, 'course/view_grades.html', {'reports': reports})
-
-
-# @login_required
-# def lab_report_detail(request, report_id):
-#     if request.user.role != 'LT':
-#         return HttpResponse("You do not have permission to view this page.", status=403)
-
-#     lab_report = get_object_or_404(LabReport, pk=report_id)
-#     responses = lab_report.studentresponse_set.all()  # Default related name usage
-
-#     return render(request, 'lab_technician/lab_report_detail.html', {
-#         'lab_report': lab_report,
-#         'responses': responses
-#     })
-
-
-# @login_required
-# def view_student_lab_reports(request):
-#     if request.user.role != 'Student':  # Assuming there's a role attribute to differentiate users
-#         return HttpResponse("You are not authorized to view this page.", status=403)
-
-#     # Assuming LabReport has a direct relationship or you can adjust based on your model
-#     lab_reports = LabReport.objects.filter(students=request.user)
-#     responses = StudentResponse.objects.filter(student=request.user)
-
-#     context = {
-#         'lab_reports': lab_reports,
-#         'responses': responses
-#     }
-#     return render(request, 'student/lab_reports.html', context)
-
-
-# @login_required
-# def student_response_detail(request, response_id):
-#     # Fetch the response; ensure it belongs to the logged-in student
-#     response = get_object_or_404(
-#         StudentResponse, id=response_id, student=request.user)
-
-#     return render(request, 'students/response_detail.html', {
-#         'response': response
-#     })
-
-
-# @login_required
-# def view_lab_reports(request):
-#     # Ensure this view is only accessible to students
-#     if not request.user.is_student:  # Adjust this check based on your user model
-#         return HttpResponse("You do not have permission to view this page.", status=403)
-
-#     # Fetch all lab reports for the logged-in student
-#     student_responses = StudentResponse.objects.filter(
-#         student=request.user).select_related('lab_report')
-
-#     return render(request, 'course/view_lab_reports.html', {
-# #         'student_responses': student_responses
-#     })
-
-# the new views
-
-
-# def view_response(request, response_id):
-#     response = get_object_or_404(
-#         StudentResponse, id=response_id, student=request.user)
-#     return render(request, 'course/view_response.html', {'response': response})
 
 
 def student_lab_report_responses(request, lab_report_id):

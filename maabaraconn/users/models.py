@@ -155,3 +155,13 @@ class Grade(models.Model):
 #     submitted_file = models.FileField(
 #         upload_to='submissions/', null=True, blank=True)
 #     # Additional fields as needed
+class LabReportSubmission(models.Model):
+    lab_report_template = models.ForeignKey(
+        LabReport, related_name='submissions', on_delete=models.CASCADE)
+    student = models.ForeignKey(
+        User, related_name='lab_submissions', on_delete=models.CASCADE)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    document = models.FileField(upload_to='lab_submissions/')
+
+    def __str__(self):
+        return f"{self.lab_report_template.title} by {self.student.username}"

@@ -1,24 +1,28 @@
-<!-- lab_reports/grading_list.html -->
 {% extends "base.html" %} {% block content %}
 <h2>Pending Lab Reports for Grading</h2>
 <table>
   <tr>
     <th>Title</th>
-    <th>Submitted By</th>
-    <th>Submitted At</th>
     <th>Laboratory</th>
+    <th>Submitted At</th>
     <th>Document</th>
+    <th>Responses</th>
     <th>Action</th>
   </tr>
   {% for report in reports %}
   <tr>
     <td>{{ report.title }}</td>
-    <td>{{ report.student }}</td>
+    <td>{{ report.laboratory }}</td>
     <td>{{ report.submitted_at }}</td>
-    <td>{{ report.laboratory.name }}</td>
     {% comment %}
     <td><a href="{{ report.document.url }}">Download</a></td>
     {% endcomment %}
+    <td>
+      {% for response in report.responses %}
+      <p>{{ response.submitted_by }}</p>
+      <!-- Removed the <br> tag for cleaner spacing -->
+      {% endfor %}
+    </td>
     <td><a href="{% url 'grade_report' report.id %}">Grade</a></td>
   </tr>
   {% empty %}
