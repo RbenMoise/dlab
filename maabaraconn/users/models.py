@@ -95,17 +95,6 @@ class TemplateSection(models.Model):
         return f'{self.title} for this {self.lab_template}'
 
 
-class StudentResponse(models.Model):
-    section = models.ForeignKey(
-        TemplateSection, on_delete=models.CASCADE, related_name='responses')
-    student = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='responses')
-    response_text = models.TextField()
-
-    def __str__(self):
-        return f"Response by {self.student} for {self.section}"
-
-
 class LabReport(models.Model):
     REPORT_TYPE_CHOICES = [
         ('IND', 'Individual'),
