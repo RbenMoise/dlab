@@ -1,0 +1,21 @@
+<!-- lab_report_detail.html -->
+{% extends "base.html" %} {% block content %}
+<h2>Responses for {{ lab_report.title }}</h2>
+<table>
+  <tr>
+    <th>Student</th>
+    <th>Response</th>
+  </tr>
+  {% for response in responses %}
+  <tr>
+    <td>{{ response.student }}</td>
+    <td>{{ response.response_text }}</td>
+  </tr>
+  {% empty %}
+  <tr>
+    <td colspan="2">No responses yet.</td>
+  </tr>
+  {% endfor %}
+</table>
+<a href="{% url 'grade_lab_report' lab_report.id %}">Grade This Report</a>
+{% endblock %}

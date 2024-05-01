@@ -71,4 +71,14 @@ urlpatterns = [
          views.student_lab_report_responses, name='student_lab_report_responses'),
     path('responses/<int:lab_report_id>/', views.student_lab_report_responses,
          name='student_lab_report_responses'),
+
+
+
+    # for the viewing and grading
+    path('lab-reports/', views.lab_reports_for_grading,
+         name='lab_reports_for_grading'),
+    path('lab-report/<int:report_id>/',
+         views.lab_report_detail_for_tech, name='lab_report_detail_for_tech'),
+    path('lab-report/<int:report_id>/grade/',
+         views.grade_lab_report, name='grade_lab_report'),
 ]

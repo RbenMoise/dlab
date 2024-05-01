@@ -308,13 +308,18 @@ def student_dashboard(request):
 def lab_report_detail(request, lab_report_id):
     lab_report = get_object_or_404(LabReport, pk=lab_report_id)
     template = lab_report.template
-    sections = template.sections.all() if template else []
 
+    if not template:
+        # Handle the case where there is no template linked to the lab report
+        messages.error(request, "No template associated with this lab report.")
+        return redirect('some_dashboard_view')
+
+    sections = template.sections.all()
     if request.method == 'POST':
         for section in sections:
             response_text = request.POST.get(f'response_{section.id}', '')
             StudentResponse.objects.update_or_create(
-                section=section, student=request.user,
+                section=section, student=request.user, lab_report=lab_report,
                 defaults={'response_text': response_text}
             )
         return redirect('student_dashboard')
@@ -373,17 +378,6 @@ def LabTemplateDelete(request, template_id):
 def laboratories_list(request):
     laboratories = Laboratory.objects.prefetch_related('lab_templates').all()
     return render(request, 'laboratories_list.html', {'laboratories': laboratories})
-
-
-# def create_lab_template(request):
-#     if request.method == 'POST':
-#         form = LabTemplateForm(request.POST)
-#         if form.is_valid():
-#             lab_template = form.save()
-#             return redirect('add_sections_to_template', lab_template_id=lab_template.id)
-#     else:
-#         form = LabTemplateForm()
-#     return render(request, 'course/create_lab_template.html', {'form': form})
 
 
 def add_sections_to_template(request, lab_template_id):
@@ -482,49 +476,6 @@ def submit_lab_report(request, lab_report_id):
     return redirect('lab_report_detail', lab_report_id=lab_report_id)
 
 
-# def lab_reports_for_grading(request):
-#     if request.user.role == 'LT':  # Ensure this matches your role system
-#         # Fetch lab reports related to the logged-in lab tech's laboratories
-#         reports = LabReport.objects.filter(laboratory__creator=request.user)
-#         print(reports)  # Debug: Print to console to see what's being fetched
-#     else:
-#         reports = LabReport.objects.none()
-
-#     context = {
-#         'reports': reports
-#     }
-#     return render(request, 'course/grading_list.html', context)
-
-# this is when the labtech is viewing the response
-# from django.shortcuts import render
-
-
-# tech can vie which stident submmited their work
-@login_required
-def lab_reports_for_grading(request):
-    if request.user.role == User.Role.LAB_TECH:
-        reports = LabReport.objects.filter(
-            status='Pending').order_by('submitted_at').prefetch_related('responses')
-
-        # Prepare data to display
-        report_list = [{
-            'id': report.id,
-            'title': report.title,
-            'laboratory': report.laboratory.name,
-            'document': report.document,
-            'submitted_at': report.submitted_at,
-            'responses': [{
-                # Adjust this line to match your user model
-                'submitted_by': response.student.get_full_name(),
-                'response_id': response.id
-            } for response in report.responses.all()]
-        } for report in reports]
-    else:
-        report_list = []
-
-    return render(request, 'course/grading_list.html', {'reports': report_list})
-
-
 @login_required
 def view_grades(request):
     if request.user.role == User.Role.LAB_TECH:
@@ -544,3 +495,37 @@ def student_lab_report_responses(request, lab_report_id):
         'lab_report': lab_report,
         'responses': responses
     })
+
+
+#     A view to list lab reports that need grading.
+# A detail view to see all student responses for a specific lab report.
+# A grading view where feedback and scores can be entered.
+
+
+@login_required
+def lab_reports_for_grading(request):
+    if request.user.role == User.Role.LAB_TECH:
+        reports = LabReport.objects.filter(
+            status='Pending').prefetch_related('responses')
+    else:
+        reports = []
+    return render(request, 'grading/lab_reports_for_grading.html', {'reports': reports})
+
+
+@login_required
+def lab_report_detail_for_tech(request, report_id):
+    lab_report = get_object_or_404(LabReport, pk=report_id)
+    responses = lab_report.responses.all()
+    return render(request, 'grading/lab_report_detail.html', {'lab_report': lab_report, 'responses': responses})
+
+
+@login_required
+def grade_lab_report(request, report_id):
+    lab_report = get_object_or_404(LabReport, pk=report_id)
+    if request.method == 'POST':
+        score = request.POST.get('score')
+        feedback = request.POST.get('feedback')
+        Grade.objects.create(lab_report=lab_report, score=score,
+                             feedback=feedback, graded_by=request.user)
+        return redirect('lab_reports_for_grading')
+    return render(request, 'grading/grade_lab_report.html', {'lab_report': lab_report})

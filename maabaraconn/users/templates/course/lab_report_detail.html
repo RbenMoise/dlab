@@ -1,5 +1,5 @@
-{% extends 'base.html' %} {% load custom_filters %} {{ mydict|get_item:"mykey"
-}} {% block content %}
+{% extends 'base.html' %} {% load static %} {% load custom_filters %} {% block
+content %}
 <div class="container">
   <h1>{{ lab_report.title }}</h1>
   <p><strong>Description:</strong> {{ lab_report.description }}</p>

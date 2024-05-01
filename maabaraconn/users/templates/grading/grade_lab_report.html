@@ -1,0 +1,11 @@
+<!-- grade_lab_report.html -->
+{% extends "base.html" %} {% block content %}
+<form method="POST">
+  {% csrf_token %}
+  <label for="score">Score:</label>
+  <input type="text" name="score" id="score" />
+  <label for="feedback">Feedback:</label>
+  <textarea name="feedback" id="feedback"></textarea>
+  <button type="submit">Submit Grade</button>
+</form>
+{% endblock %}

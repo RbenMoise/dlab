@@ -1,0 +1,15 @@
+<!-- lab_reports_for_grading.html -->
+{% extends "base.html" %} {% block content %}
+<h2>Pending Lab Reports for Grading</h2>
+<ul>
+  {% for report in reports %}
+  <li>
+    <a href="{% url 'lab_report_detail_for_tech' report.id %}"
+      >{{ report.title }}</a
+    >
+  </li>
+  {% empty %}
+  <li>No lab reports pending grading.</li>
+  {% endfor %}
+</ul>
+{% endblock %}
