@@ -147,14 +147,6 @@ class Grade(models.Model):
         return f"Grade for {self.lab_report.student.username} - {self.score}/100"
 
 
-# class LabReport(models.Model):
-#     title = models.CharField(max_length=255)
-#     description = models.TextField()
-#     due_date = models.DateField()
-#     template = models.FileField(upload_to='templates/')
-#     submitted_file = models.FileField(
-#         upload_to='submissions/', null=True, blank=True)
-#     # Additional fields as needed
 class LabReportSubmission(models.Model):
     lab_report_template = models.ForeignKey(
         LabReport, related_name='submissions', on_delete=models.CASCADE)
