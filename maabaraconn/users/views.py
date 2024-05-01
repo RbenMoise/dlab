@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from .models import LabReport, StudentResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.forms import modelformset_factory
@@ -512,11 +513,20 @@ def lab_reports_for_grading(request):
     return render(request, 'grading/lab_reports_for_grading.html', {'reports': reports})
 
 
-@login_required
-def lab_report_detail_for_tech(request, report_id):
-    lab_report = get_object_or_404(LabReport, pk=report_id)
-    responses = lab_report.responses.all()
-    return render(request, 'grading/lab_report_detail.html', {'lab_report': lab_report, 'responses': responses})
+def lab_report_detail_for_tech(request, lab_report_id):
+    lab_report = LabReport.objects.get(id=lab_report_id)
+    student_responses = StudentResponse.objects.filter(lab_report=lab_report)
+    # Organize responses by student
+    responses_by_student = {}
+    for response in student_responses:
+        if response.student not in responses_by_student:
+            responses_by_student[response.student] = []
+        responses_by_student[response.student].append(response)
+    context = {
+        'lab_report': lab_report,
+        'responses_by_student': responses_by_student,
+    }
+    return render(request, 'grading/lab_report_detail.html', context)
 
 
 @login_required
@@ -529,3 +539,51 @@ def grade_lab_report(request, report_id):
                              feedback=feedback, graded_by=request.user)
         return redirect('lab_reports_for_grading')
     return render(request, 'grading/grade_lab_report.html', {'lab_report': lab_report})
+
+
+# this is for the tech to view the student report
+@login_required
+def student_lab_response(request, lab_report_id, student_id):
+    lab_report = get_object_or_404(LabReport, pk=lab_report_id)
+    student = get_object_or_404(User, pk=student_id)
+    template = lab_report.template
+    sections = template.sections.all() if template else []
+
+    responses = StudentResponse.objects.filter(
+        lab_report=lab_report, student=student).select_related('section')
+
+    response_dict = {
+        response.section.title: response.response_text for response in responses}
+
+    context = {
+        'lab_report': lab_report,
+        'student': student,
+        'sections': sections,
+        'responses': response_dict,
+    }
+    return render(request, 'grading/student_lab_response.html', context)
+
+
+# to handle for submissinon and save grades and feedback
+
+
+@login_required
+def save_grades(request, lab_report_id, student_id):
+    if request.method == 'POST':
+        lab_report = get_object_or_404(LabReport, pk=lab_report_id)
+        student = get_object_or_404(User, pk=student_id)
+
+        for key, value in request.POST.items():
+            if key.startswith('response_'):
+                section_id = int(key.split('_')[2])
+                section = get_object_or_404(TemplateSection, pk=section_id)
+                response, created = StudentResponse.objects.update_or_create(
+                    lab_report=lab_report, student=student, section=section,
+                    defaults={'response_text': value}
+                )
+
+        # Redirect after POST
+        return HttpResponseRedirect(reverse('lab_report_detail', args=[lab_report_id]))
+    else:
+        # Not a post, redirect to lab report detail page
+        return HttpResponseRedirect(reverse('lab_report_detail', args=[lab_report_id]))
