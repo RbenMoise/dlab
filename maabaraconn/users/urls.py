@@ -82,8 +82,12 @@ urlpatterns = [
     path('lab-report/<int:report_id>/grade/',
          views.grade_lab_report, name='grade_lab_report'),
 
-    #     handling the detailed view of student responses
+    #     handling the detailed view of student responses page 1
     path('lab-reports/<int:lab_report_id>/responses/<int:student_id>/',
          views.student_lab_response, name='student_lab_response'),
+    # to direct lec to section response
+    path('lab-report/<int:report_id>/student/<int:student_id>/responses/',
+         views.detailed_responses, name='detailed_responses'),
+    # other URL patterns
 
 ]

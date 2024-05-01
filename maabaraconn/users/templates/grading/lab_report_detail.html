@@ -3,11 +3,7 @@
 
 {% for student, responses in responses_by_student.items %}
 <h2>{{ student.username }}</h2>
-{% for response in responses %}
-<strong>{{ response.section.title }}:</strong>
-<p>{{ response.response_text|default_if_none:"No response" }}</p>
-{% endfor %}
-<a href="{% url 'student_lab_response' student.id lab_report.id %}"
+<a href="{% url 'detailed_responses' lab_report.id student.id %}"
   >View Detailed Responses</a
 >
 {% empty %}

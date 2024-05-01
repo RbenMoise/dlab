@@ -1,3 +1,5 @@
+from .models import LabReport, StudentResponse, User
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
 from .models import LabReport, StudentResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -587,3 +589,20 @@ def save_grades(request, lab_report_id, student_id):
     else:
         # Not a post, redirect to lab report detail page
         return HttpResponseRedirect(reverse('lab_report_detail', args=[lab_report_id]))
+
+
+# details for the spesific responses
+
+
+def detailed_responses(request, report_id, student_id):
+    lab_report = get_object_or_404(LabReport, id=report_id)
+    student = get_object_or_404(User, id=student_id)
+    responses = StudentResponse.objects.filter(
+        lab_report=lab_report, student=student)
+
+    context = {
+        'lab_report': lab_report,
+        'student': student,
+        'responses': responses,
+    }
+    return render(request, 'grading/detailed_responses.html', context)

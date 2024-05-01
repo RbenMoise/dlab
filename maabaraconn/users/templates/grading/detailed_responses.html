@@ -1,0 +1,12 @@
+<h1>Responses for {{ lab_report.title }} by {{ student.username }}</h1>
+
+{% for response in responses %}
+<h2>{{ response.section.title }}</h2>
+<p>{{ response.response_text|default_if_none:"No response" }}</p>
+{% empty %}
+<p>No responses to display.</p>
+{% endfor %}
+
+<a href="{% url 'lab_report_detail_for_tech' lab_report.id %}"
+  >Back to Lab Report</a
+>
