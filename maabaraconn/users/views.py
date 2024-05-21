@@ -315,7 +315,7 @@ def lab_report_detail(request, lab_report_id):
     if not template:
         # Handle the case where there is no template linked to the lab report
         messages.error(request, "No template associated with this lab report.")
-        return redirect('some_dashboard_view')
+        return redirect('student_dashboard')
 
     sections = template.sections.all()
     if request.method == 'POST':
@@ -383,10 +383,14 @@ def laboratories_list(request):
     return render(request, 'laboratories_list.html', {'laboratories': laboratories})
 
 
+# the place where the tech adds sections to templates
+
+
 def add_sections_to_template(request, lab_template_id):
-    template = LabTemplate.objects.get(id=lab_template_id)
+    template = get_object_or_404(LabTemplate, id=lab_template_id)
     SectionFormset = modelformset_factory(
-        TemplateSection, form=TemplateSectionForm, )
+        TemplateSection, form=TemplateSectionForm, extra=1)
+
     if request.method == 'POST':
         formset = SectionFormset(
             request.POST, queryset=TemplateSection.objects.none())
@@ -395,12 +399,10 @@ def add_sections_to_template(request, lab_template_id):
             for section in sections:
                 section.lab_template = template
                 section.save()
-            # Redirect after POST
-            print("Redirecting to labtech_dashboard")
-            return redirect('labtech_dashboard', )
+            return redirect('labtech_dashboard')
     else:
-        # print(formset.errors)
         formset = SectionFormset(queryset=template.sections.all())
+
     return render(request, 'course/add_sections_to_template.html', {'formset': formset, 'template': template})
 
 
@@ -440,6 +442,8 @@ def delete_section_type(request, section_type_id):
         SectionType.objects.filter(id=section_type_id).delete()
         return HttpResponseRedirect(reverse('labtech_dashboard'))
 
+# to view the template after adding sections
+
 
 def view_template_details(request, lab_template_id):
     template = get_object_or_404(LabTemplate, id=lab_template_id)
@@ -450,6 +454,8 @@ def view_template_details(request, lab_template_id):
         'sections': sections,
     }
     return render(request, 'users/template_details.html', context)
+
+# to delete sections
 
 
 def delete_section(request, lab_template_id, section_id):

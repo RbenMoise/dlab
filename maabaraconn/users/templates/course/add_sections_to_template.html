@@ -1,8 +1,11 @@
-<h2>Add Sections to {{ template.name }}</h2>
-
-<form method="post">
-  {% csrf_token %} {{ formset.management_form }} {% for form in formset %}
-  <div class="section">{{ form.as_p }}</div>
-  {% endfor %}
-  <input type="submit" value="Submit" />
-</form>
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+  <h2>Add Sections to {{ template.name }}</h2>
+  <form method="post">
+    {% csrf_token %} {{ formset.management_form }} {% for form in formset %}
+    <div class="section">{{ form.as_p }}</div>
+    {% endfor %}
+    <input type="submit" value="Submit" />
+  </form>
+</div>
+{% endblock %}

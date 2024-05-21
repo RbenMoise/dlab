@@ -90,6 +90,7 @@ class TemplateSection(models.Model):
     content = models.TextField()
     visible_to_students = models.BooleanField(default=True)
     section_type = models.ForeignKey(SectionType, on_delete=models.CASCADE)
+    marks = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f'{self.title} for this {self.lab_template}'

@@ -11,9 +11,11 @@
 <ul>
   {% for section in sections %}
   <li>
-    <h3>{{ section.section_type }}</h3>
+    <h3>{{ section.section_type.name }}</h3>
     <p>Visible to Students: {{ section.visible_to_students }}</p>
     <p>Content: {{ section.content }}</p>
+    <p>Marks: {{ section.marks }}</p>
+    <!-- Displaying the assigned marks -->
     <!-- Display section details here -->
     <form
       action="{% url 'delete_section' lab_template_id=template.id section_id=section.id %}"

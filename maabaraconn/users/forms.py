@@ -65,7 +65,7 @@ class LabTemplateForm(forms.ModelForm):
 class TemplateSectionForm(forms.ModelForm):
     class Meta:
         model = TemplateSection
-        fields = ['section_type', 'content', 'visible_to_students']
+        fields = ['section_type', 'content', 'visible_to_students', 'marks']
 
 
 SectionFormset = forms.inlineformset_factory(
