@@ -1,5 +1,5 @@
-{% extends 'base.html' %} {% load static %} {% load custom_filters %} {% block
-content %}
+{% extends 'base.html' %} {% load static %} {% block content %} {% comment %} {%
+load custom_filters %} {% endcomment %}
 <div class="container">
   <h1>{{ lab_report.title }}</h1>
   <p><strong>Description:</strong> {{ lab_report.description }}</p>
@@ -8,7 +8,7 @@ content %}
     <div>
       <h3>{{ section.title }}</h3>
       <textarea name="response_{{ section.id }}" rows="4" cols="50">
-{{ responses|get_item:section.id|default:"" }}</textarea
+{{ responses.section.id }}</textarea
       >
     </div>
     {% endfor %}
@@ -16,4 +16,4 @@ content %}
   </form>
   <a href="{% url 'student_dashboard' %}">Back to Dashboard</a>
 </div>
-{% endblock %}
+{%endblock%}
