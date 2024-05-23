@@ -1,0 +1,21 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+  <h1>Pending Enrollments for {{ course.name }}</h1>
+  <ul>
+    {% for enrollment in pending_enrollments %}
+    <li>
+      {{ enrollment.user.username }} requested to enroll
+      <form
+        method="post"
+        action="{% url 'approve_enrollment' enrollment.course.id %}"
+        style="display: inline"
+      >
+        {% csrf_token %}
+        <input type="hidden" name="enrollment_id" value="{{ enrollment.id }}" />
+        <button type="submit" class="btn btn-success">Approve</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
