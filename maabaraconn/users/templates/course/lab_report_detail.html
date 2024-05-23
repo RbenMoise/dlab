@@ -1,5 +1,4 @@
-{% extends 'base.html' %} {% load static %} {% block content %} {% comment %} {%
-load custom_filters %} {% endcomment %}
+{% extends 'base.html' %} {% load static %} {% block content %}
 <div class="container">
   <h1>{{ lab_report.title }}</h1>
   <p><strong>Description:</strong> {{ lab_report.description }}</p>
@@ -7,6 +6,8 @@ load custom_filters %} {% endcomment %}
     {% csrf_token %} {% for section in sections %}
     <div>
       <h3>{{ section.title }}</h3>
+      <p><strong>Marks:</strong> {{ section.marks }}</p>
+      <!-- Display the marks -->
       <textarea name="response_{{ section.id }}" rows="4" cols="50">
 {{ responses.section.id }}</textarea
       >
@@ -16,4 +17,4 @@ load custom_filters %} {% endcomment %}
   </form>
   <a href="{% url 'student_dashboard' %}">Back to Dashboard</a>
 </div>
-{%endblock%}
+{% endblock %}
