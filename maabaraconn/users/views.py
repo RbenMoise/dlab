@@ -484,12 +484,15 @@ def submit_lab_report(request, lab_report_id):
     # Redirect to the detail page if the conditions are not met
     return redirect('lab_report_detail', lab_report_id=lab_report_id)
 
+# when tech clicks on view grades
+
 
 @login_required
 def view_grades(request):
     if request.user.role == User.Role.LAB_TECH:
         reports = LabReport.objects.filter(grade__isnull=False).select_related(
-            'student').order_by('-submitted_at')
+            'creator', 'student', 'laboratory', 'grade'
+        ).order_by('-submitted_at')
     else:
         reports = LabReport.objects.none()  # No access for other roles
 

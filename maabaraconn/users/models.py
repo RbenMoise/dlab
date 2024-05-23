@@ -99,27 +99,33 @@ class TemplateSection(models.Model):
 class LabReport(models.Model):
     REPORT_TYPE_CHOICES = [
         ('IND', 'Individual'),
-        ('GRP', 'Group'),]
+        ('GRP', 'Group'),
+    ]
     report_type = models.CharField(
         max_length=3, choices=REPORT_TYPE_CHOICES, default='IND')
     creator = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='lab_reports')
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_lab_reports'
+    )
+    student = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='student_lab_reports', null=True, blank=True
+    )
     course = models.ForeignKey(
-        Course, on_delete=models.CASCADE, related_name='lab_reports')
+        Course, on_delete=models.CASCADE, related_name='lab_reports'
+    )
     title = models.CharField(max_length=255)
     description = models.TextField()
-    # student = models.ForeignKey(
-    # User, on_delete=models.CASCADE, related_name='lab_reports')
     laboratory = models.ForeignKey(
-        Laboratory, on_delete=models.CASCADE, related_name='lab_reports', null=True)
+        Laboratory, on_delete=models.CASCADE, related_name='lab_reports', null=True
+    )
     document = models.FileField(upload_to='lab_reports/')
     submitted_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=100, default='Pending')
     template = models.ForeignKey(
-        LabTemplate, on_delete=models.SET_NULL, null=True, blank=True, related_name='lab_reports')
+        LabTemplate, on_delete=models.SET_NULL, null=True, blank=True, related_name='lab_reports'
+    )
 
     def __str__(self):
-        return f"Report by {self.creator} for {self.laboratory.name}"
+        return f"Report by {self.creator.username} for {self.laboratory.name}"
 
 
 class StudentResponse(models.Model):

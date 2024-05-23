@@ -64,6 +64,8 @@ urlpatterns = [
     #     tech to view the reports by diffrent students
     path('lab-reports/grading/', views.lab_reports_for_grading,
          name='lab_reports_for_grading'),
+
+    #     when tech clickes on view grades
     path('lab-reports/grades/', views.view_grades, name='view_grades'),
     # urls.py
 
