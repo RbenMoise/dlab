@@ -2,8 +2,8 @@
 
 {% extends 'base.html' %} {% load static %} {% block content %}
 <div class="container">
-  <h1>View Grades</h1>
-  <table class="table table-striped">
+  <h1>Graded Lab Reports</h1>
+  <table class="table">
     <thead>
       <tr>
         <th>Title</th>
@@ -18,14 +18,15 @@
       {% for report in reports %}
       <tr>
         <td>{{ report.title }}</td>
-        <td>
-          {% if report.student %} {{ report.student.username }} {% else %}
-          Student Unknown {% endif %}
-        </td>
+        <td>{{ report.student.username|default:"Unknown Student" }}</td>
         <td>{{ report.submitted_at }}</td>
         <td>{{ report.laboratory.name }}</td>
         <td>{{ report.grade.score }}</td>
         <td>{{ report.grade.feedback }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6">No graded lab reports available.</td>
       </tr>
       {% endfor %}
     </tbody>

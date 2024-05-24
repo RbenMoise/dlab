@@ -1,3 +1,4 @@
+from .models import StudentResponse
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import Grade, LabTemplate, Laboratory, SectionType, TemplateSection, User, Course, LabReport
@@ -85,3 +86,23 @@ class GradeForm(forms.ModelForm):
         widgets = {
             'feedback': forms.Textarea(attrs={'cols': 40, 'rows': 5})
         }
+
+
+class GradeForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        responses = kwargs.pop('responses')
+        super().__init__(*args, **kwargs)
+        for response in responses:
+            self.fields[f'marks_{response.id}'] = forms.IntegerField(
+                label=response.section.title,
+                initial=response.marks_awarded,
+                min_value=0,
+                max_value=response.section.marks
+            )
+
+    def save(self):
+        for field_name, value in self.cleaned_data.items():
+            response_id = field_name.split('_')[1]
+            response = StudentResponse.objects.get(id=response_id)
+            response.marks_awarded = value
+            response.save()

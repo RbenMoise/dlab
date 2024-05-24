@@ -1,12 +1,32 @@
-<h1>Responses for {{ lab_report.title }} by {{ student.username }}</h1>
+<!-- templates/grading/detailed_responses.html -->
 
-{% for response in responses %}
-<h2>{{ response.section.title }}</h2>
-<p>{{ response.response_text|default_if_none:"No response" }}</p>
-{% empty %}
-<p>No responses to display.</p>
-{% endfor %}
-
-<a href="{% url 'lab_report_detail_for_tech' lab_report.id %}"
-  >Back to Lab Report</a
->
+{% extends 'base.html' %} {% load static %} {% block content %}
+<div class="container">
+  <h1>Responses for {{ student.username }} - {{ lab_report.title }}</h1>
+  <form method="post">
+    {% csrf_token %} {% for response in responses %}
+    <h2>{{ response.section.title }}</h2>
+    <p>{{ response.response_text|default_if_none:"No response" }}</p>
+    <label for="id_marks_{{ response.id }}"
+      >Marks ({{ response.section.marks }} max):</label
+    >
+    <input
+      type="number"
+      name="marks_{{ response.id }}"
+      id="id_marks_{{ response.id }}"
+      value="{{ response.marks_awarded }}"
+      min="0"
+      max="{{ response.section.marks }}"
+    />
+    {% empty %}
+    <p>No responses to display.</p>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Submit Grades</button>
+  </form>
+  <a
+    href="{% url 'lab_report_detail_for_tech' lab_report.id %}"
+    class="btn btn-secondary"
+    >Back to Lab Report</a
+  >
+</div>
+{% endblock %}

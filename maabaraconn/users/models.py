@@ -136,6 +136,7 @@ class StudentResponse(models.Model):
     response_text = models.TextField()
     lab_report = models.ForeignKey(
         LabReport, on_delete=models.CASCADE, related_name='responses')
+    marks_awarded = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"Response by {self.student} for {self.section}"

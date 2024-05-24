@@ -1,3 +1,4 @@
+from .forms import GradeForm
 from .models import LabReport, StudentResponse, User
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
@@ -470,19 +471,21 @@ def delete_section(request, lab_template_id, section_id):
 
 
 @login_required
-def submit_lab_report(request, lab_report_id):
-    lab_report = get_object_or_404(LabReport, pk=lab_report_id)
-    if request.method == 'POST' and request.FILES['submitted_file']:
-        # Handle the file upload
-        submitted_file = request.FILES['submitted_file']
-        # Assume you have a model field in LabReport to store submitted files
-        lab_report.submitted_file = submitted_file
-        lab_report.save()
-        messages.success(request, "Lab report submitted successfully.")
-        return redirect('student_dashboard')
-
-    # Redirect to the detail page if the conditions are not met
-    return redirect('lab_report_detail', lab_report_id=lab_report_id)
+def submit_lab_report(request, lab_id):
+    laboratory = get_object_or_404(Laboratory, id=lab_id)
+    if request.method == 'POST':
+        form = LabReportForm(request.POST, request.FILES)
+        if form.is_valid():
+            lab_report = form.save(commit=False)
+            lab_report.creator = request.user
+            lab_report.student = request.user  # Ensure the student field is set
+            lab_report.laboratory = laboratory
+            lab_report.save()
+            messages.success(request, 'Lab report submitted successfully.')
+            return redirect('student_dashboard')
+    else:
+        form = LabReportForm()
+    return render(request, 'lab_report_detail.html', {'form': form, 'laboratory': laboratory})
 
 # when tech clicks on view grades
 
@@ -491,8 +494,7 @@ def submit_lab_report(request, lab_report_id):
 def view_grades(request):
     if request.user.role == User.Role.LAB_TECH:
         reports = LabReport.objects.filter(grade__isnull=False).select_related(
-            'creator', 'student', 'laboratory', 'grade'
-        ).order_by('-submitted_at')
+            'student', 'creator', 'laboratory', 'grade').order_by('-submitted_at')
     else:
         reports = LabReport.objects.none()  # No access for other roles
 
@@ -522,6 +524,8 @@ def lab_reports_for_grading(request):
     else:
         reports = []
     return render(request, 'grading/lab_reports_for_grading.html', {'reports': reports})
+
+# has been clicked by teche to view labreports submited by students
 
 
 def lab_report_detail_for_tech(request, lab_report_id):
@@ -601,17 +605,30 @@ def save_grades(request, lab_report_id, student_id):
 
 
 # details for the spesific responses
-
-
 def detailed_responses(request, report_id, student_id):
     lab_report = get_object_or_404(LabReport, id=report_id)
     student = get_object_or_404(User, id=student_id)
     responses = StudentResponse.objects.filter(
         lab_report=lab_report, student=student)
 
+    if request.method == 'POST':
+        form = GradeForm(request.POST, responses=responses)
+        if form.is_valid():
+            form.save()
+            total_marks = sum(response.marks_awarded for response in responses)
+            Grade.objects.update_or_create(
+                lab_report=lab_report,
+                defaults={'score': total_marks, 'graded_by': request.user}
+            )
+            messages.success(request, 'Grades submitted successfully.')
+            return redirect('lab_report_detail_for_tech', lab_report.id)
+    else:
+        form = GradeForm(responses=responses)
+
     context = {
         'lab_report': lab_report,
         'student': student,
         'responses': responses,
+        'form': form,
     }
     return render(request, 'grading/detailed_responses.html', context)
