@@ -1,3 +1,4 @@
+from .models import LabReport
 from .forms import GradeForm
 from .models import LabReport, StudentResponse, User
 from django.shortcuts import get_object_or_404, render

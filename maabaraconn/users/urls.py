@@ -6,8 +6,14 @@ from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+
+    #     login url
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
-    path('', views.landing_page, name='landing_page'),
+
+    #     #     bashboard
+    #     path('', views.dashboard, name='dashboard'),
+
+
     path('register/', views.register, name='register'),
     path('add_course/', views.CourseCreateView.as_view(),
          name='add_course'),
@@ -76,20 +82,26 @@ urlpatterns = [
 
 
 
-    # for the viewing and grading
+    # for viewing all pending lab reports
     path('lab-reports/', views.lab_reports_for_grading,
          name='lab_reports_for_grading'),
+
+    #     now the upper has been clicked to view labreports by students
     path('lab-report/<int:lab_report_id>/',
          views.lab_report_detail_for_tech, name='lab_report_detail_for_tech'),
+
+    # to direct lec to section response by indiv std
+    path('lab-report/<int:report_id>/student/<int:student_id>/responses/',
+         views.detailed_responses, name='detailed_responses'),
+
+
     path('lab-report/<int:report_id>/grade/',
          views.grade_lab_report, name='grade_lab_report'),
 
     #     handling the detailed view of student responses page 1
     path('lab-reports/<int:lab_report_id>/responses/<int:student_id>/',
          views.student_lab_response, name='student_lab_response'),
-    # to direct lec to section response
-    path('lab-report/<int:report_id>/student/<int:student_id>/responses/',
-         views.detailed_responses, name='detailed_responses'),
-    # other URL patterns
 
+    # other URL patterns
+    path('', views.landing_page, name='landing_page'),
 ]
