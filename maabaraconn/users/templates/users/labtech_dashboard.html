@@ -54,7 +54,13 @@
 <h2>My Lab Reports</h2>
 <ul>
   {% for report in my_lab_reports %}
-    <li>{{ report.title }} - {{ report.description }}</li>
+    <li>
+      {{ report.title }} - {{ report.description }}
+      <form action="{% url 'delete_lab_report' report.id %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this lab report?');">Delete</button>
+      </form>
+    </li>
   {% empty %}
     <p>No lab reports found.</p>
   {% endfor %}

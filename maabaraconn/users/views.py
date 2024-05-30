@@ -634,6 +634,8 @@ def detailed_responses(request, report_id, student_id):
     }
     return render(request, 'grading/detailed_responses.html', context)
 
+# delete report
+
 
 @login_required
 def delete_lab_report(request, report_id):
@@ -647,3 +649,15 @@ def delete_lab_report(request, report_id):
     else:
         messages.error(request, 'Invalid request method.')
         return redirect('labtech_dashboard')
+
+
+# view grades
+@login_required
+def student_lab_reports(request):
+    # Fetch the lab reports for the logged-in student
+    lab_reports = LabReport.objects.filter(student=request.user)
+
+    context = {
+        'lab_reports': lab_reports,
+    }
+    return render(request, 'users/student_lab_reports.html', context)

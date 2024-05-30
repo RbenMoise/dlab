@@ -106,6 +106,7 @@ class LabReport(models.Model):
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_lab_reports'
     )
+
     student = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='student_lab_reports', null=True, blank=True
     )
@@ -123,6 +124,7 @@ class LabReport(models.Model):
     template = models.ForeignKey(
         LabTemplate, on_delete=models.SET_NULL, null=True, blank=True, related_name='lab_reports'
     )
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"Report by {self.creator.username} for {self.laboratory.name}"
