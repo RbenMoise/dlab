@@ -319,7 +319,7 @@ def lab_report_detail(request, lab_report_id):
     lab_report = get_object_or_404(LabReport, pk=lab_report_id)
     template = lab_report.template
 
-    if not template:
+    if lab_report.template:
         # Handle the case where there is no template linked to the lab report
         messages.error(request, "No template associated with this lab report.")
         return redirect('student_dashboard')

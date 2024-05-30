@@ -6,11 +6,15 @@
     {% csrf_token %} {% for section in sections %}
     <div>
       <h3>{{ section.title }}</h3>
+      <p><strong>Instructions:</strong> {{ section.instructions }}</p>
+      <p><strong>Content:</strong></p>
+      <!-- Display the content of the section -->
+      <p>{{ section.content }}</p>
       <p><strong>Marks:</strong> {{ section.marks }}</p>
       <!-- Display the marks -->
       <textarea name="response_{{ section.id }}" rows="4" cols="50">
-{{ responses.section.id }}</textarea
-      >
+        {{ responses.section.id }}
+      </textarea>
     </div>
     {% endfor %}
     <button type="submit" class="btn btn-success">Submit Responses</button>

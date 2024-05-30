@@ -45,11 +45,11 @@ urlpatterns = [
     path('upload_lab_report/<int:course_id>/',
          views.upload_lab_report, name='upload_lab_report'),
     path('student/dashboard/', views.student_dashboard, name='student_dashboard'),
-    path('lab-reports/<int:lab_report_id>/',
-         views.lab_report_detail, name='lab_report_detail'),
+
 
     path('lab-reports/<int:lab_report_id>/',
          views.lab_report_detail, name='lab_report_detail'),
+
 
 
     #     path('upload_template/', views.upload_lab_template,
