@@ -301,12 +301,17 @@ def course_detail(request, course_id):
     return render(request, 'users/course_detail.html', {'course': course, 'lab_reports': lab_reports})
 
 
-@login_required
 def student_dashboard(request):
-    enrolled_courses = request.user.enrolled_courses.prefetch_related(
-        'lab_reports').all()
-    lab_reports = LabReport.objects.filter(course__in=enrolled_courses)
-    return render(request, 'users/student_dashboard.html', {'lab_reports': lab_reports})
+    enrolled_courses = request.user.enrolled_courses.all()
+    reports = LabReport.objects.filter(student=request.user, grade__isnull=False).select_related(
+        'course', 'grade').order_by('-submitted_at')
+
+    context = {
+        'enrolled_courses': enrolled_courses,
+        'reports': reports,
+        'available_courses': Course.objects.exclude(id__in=enrolled_courses),
+    }
+    return render(request, 'users/student_dashboard.html', context)
 
 
 @login_required
@@ -605,7 +610,7 @@ def save_grades(request, lab_report_id, student_id):
         return HttpResponseRedirect(reverse('lab_report_detail', args=[lab_report_id]))
 
 
-# details for the spesific responses
+# details for the spesific student responses for the labtech to grade
 def detailed_responses(request, report_id, student_id):
     lab_report = get_object_or_404(LabReport, id=report_id)
     student = get_object_or_404(User, id=student_id)
