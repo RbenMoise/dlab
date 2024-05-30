@@ -1,3 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <h1>{{ lab_report.title }}</h1>
+  <p>Course: {{ lab_report.course.name }}</p>
+  <p>Description: {{ lab_report.description }}</p>
+  <p>Submitted at: {{ lab_report.submitted_at }}</p>
+
+  <h2>Responses</h2>
+  <ul>
+    {% for response in responses %}
+    <li>
+      <p>Section: {{ response.section.title }}</p>
+      <p>Response: {{ response.response_text }}</p>
+      <p>Marks Awarded: {{ response.marks_awarded }}</p>
+    </li>
+    {% endfor %}
+  </ul>
+
+  {% if lab_report.grade %}
+  <h2>Grade</h2>
+  <p>Score: {{ lab_report.grade.score }}</p>
+  <p>Feedback: {{ lab_report.grade.feedback }}</p>
+  {% else %}
+  <p>No grade yet.</p>
+  {% endif %}
+
+  {% if request.user.role == 'LT' %}
+  <h2>Grade Responses</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Submit Grades</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}
+
+
+
 from .models import LabReport
 from .forms import GradeForm
 from .models import LabReport, StudentResponse, User
@@ -303,10 +344,16 @@ def course_detail(request, course_id):
 
 @login_required
 def student_dashboard(request):
-    enrolled_courses = request.user.enrolled_courses.prefetch_related(
-        'lab_reports').all()
-    lab_reports = LabReport.objects.filter(course__in=enrolled_courses)
-    return render(request, 'users/student_dashboard.html', {'lab_reports': lab_reports})
+    user = request.user
+    # Fetch lab reports submitted by the logged-in student
+    lab_reports = LabReport.objects.filter(student=user)
+    # Fetch grades associated with these lab reports
+    grades = Grade.objects.filter(lab_report__in=lab_reports)
+
+    context = {
+        'grades': grades,
+    }
+    return render(request, 'users/student_dashboard.html', context)
 
 
 @login_required
@@ -605,7 +652,7 @@ def save_grades(request, lab_report_id, student_id):
         return HttpResponseRedirect(reverse('lab_report_detail', args=[lab_report_id]))
 
 
-# details for the spesific responses
+# details for the spesific responses to be graded
 def detailed_responses(request, report_id, student_id):
     lab_report = get_object_or_404(LabReport, id=report_id)
     student = get_object_or_404(User, id=student_id)
@@ -635,15 +682,5 @@ def detailed_responses(request, report_id, student_id):
     return render(request, 'grading/detailed_responses.html', context)
 
 
-@login_required
-def delete_lab_report(request, report_id):
-    lab_report = get_object_or_404(
-        LabReport, id=report_id, creator=request.user)
+    
 
-    if request.method == 'POST':
-        lab_report.delete()
-        messages.success(request, 'Lab report deleted successfully.')
-        return redirect('labtech_dashboard')
-    else:
-        messages.error(request, 'Invalid request method.')
-        return redirect('labtech_dashboard')

@@ -104,4 +104,8 @@ urlpatterns = [
 
     # other URL patterns
     path('', views.landing_page, name='landing_page'),
+
+
+    path('delete_lab_report/<int:report_id>/',
+         views.delete_lab_report, name='delete_lab_report'),
 ]
