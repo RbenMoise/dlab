@@ -18,6 +18,16 @@
       min="0"
       max="{{ response.section.marks }}"
     />
+    <!-- Add feedback textarea -->
+    <label for="id_feedback_{{ response.id }}">Feedback:</label>
+    <textarea
+      name="feedback_{{ response.id }}"
+      id="id_feedback_{{ response.id }}"
+      cols="60"
+      rows="4"
+    >
+{{ response.feedback }}</textarea
+    >
     {% empty %}
     <p>No responses to display.</p>
     {% endfor %}

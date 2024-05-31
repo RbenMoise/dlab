@@ -1,3 +1,5 @@
+from .models import LabReport, User
+from django.shortcuts import render, get_object_or_404
 from .models import LabReport
 from .forms import GradeForm
 from .models import LabReport, StudentResponse, User
@@ -301,17 +303,19 @@ def course_detail(request, course_id):
     return render(request, 'users/course_detail.html', {'course': course, 'lab_reports': lab_reports})
 
 
+@login_required
 def student_dashboard(request):
-    enrolled_courses = request.user.enrolled_courses.all()
-    reports = LabReport.objects.filter(student=request.user, grade__isnull=False).select_related(
-        'course', 'grade').order_by('-submitted_at')
+    if request.user.role != User.Role.STUDENT:
+        return redirect('home')
+
+    student = request.user
+    lab_reports = LabReport.objects.filter(student=student).select_related(
+        'grade', 'template').prefetch_related('responses__section')
 
     context = {
-        'enrolled_courses': enrolled_courses,
-        'reports': reports,
-        'available_courses': Course.objects.exclude(id__in=enrolled_courses),
+        'lab_reports': lab_reports,
     }
-    return render(request, 'users/student_dashboard.html', context)
+    return render(request, 'students/dashboard.html', context)
 
 
 @login_required
@@ -319,7 +323,7 @@ def lab_report_detail(request, lab_report_id):
     lab_report = get_object_or_404(LabReport, pk=lab_report_id)
     template = lab_report.template
 
-    if lab_report.template:
+    if not template:
         # Handle the case where there is no template linked to the lab report
         messages.error(request, "No template associated with this lab report.")
         return redirect('student_dashboard')
@@ -666,3 +670,54 @@ def student_lab_reports(request):
         'lab_reports': lab_reports,
     }
     return render(request, 'users/student_lab_reports.html', context)
+
+#  for the student to see their marks vf
+
+
+def student_marks_detail(request, report_id, student_id):
+    lab_report = get_object_or_404(LabReport, id=report_id)
+    student = get_object_or_404(User, id=student_id)
+    responses = StudentResponse.objects.filter(
+        lab_report=lab_report, student=student)
+
+    feedbacks = {response.id: response.feedback for response in responses}
+
+    context = {
+        'lab_report': lab_report,
+        'student': student,
+        'responses': responses,
+        'feedbacks': feedbacks,
+    }
+    return render(request, 'grading/student_marks_detail.html', context)
+
+
+def student_marks_detail(request, report_id, student_id):
+    lab_report = get_object_or_404(LabReport, id=report_id)
+    student = get_object_or_404(User, id=student_id)
+    responses = StudentResponse.objects.filter(
+        lab_report=lab_report, student=student)
+
+    feedbacks = {response.id: response.feedback for response in responses}
+
+    context = {
+        'lab_report': lab_report,
+        'student': student,
+        'responses': responses,
+        'feedbacks': feedbacks,
+    }
+    return render(request, 'grading/student_marks_detail.html', context)
+
+# first page for students to see grades vf
+
+
+@login_required
+def student_lab_reports(request, student_id):
+    student = get_object_or_404(User, id=student_id)
+    lab_reports = LabReport.objects.filter(
+        responses__student=student).distinct()
+
+    context = {
+        'student': student,
+        'lab_reports': lab_reports,
+    }
+    return render(request, 'grading/student_lab_reports.html', context)

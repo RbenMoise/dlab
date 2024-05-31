@@ -1,0 +1,13 @@
+{% extends 'base.html' %} {% block content %}
+<h2>Lab Reports for {{ student.username }}</h2>
+<ul>
+  {% for lab_report in lab_reports %}
+  <li>
+    {{ lab_report.title }}
+    <a href="{% url 'student_marks_detail' lab_report.id student.id %}"
+      >View Marks</a
+    >
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

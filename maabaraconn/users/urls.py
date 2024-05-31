@@ -46,7 +46,7 @@ urlpatterns = [
          views.upload_lab_report, name='upload_lab_report'),
     path('student/dashboard/', views.student_dashboard, name='student_dashboard'),
 
-
+    # for the student to go to the response page vf
     path('lab-reports/<int:lab_report_id>/',
          views.lab_report_detail, name='lab_report_detail'),
 
@@ -66,8 +66,12 @@ urlpatterns = [
     path('add_section_type/', views.add_section_type, name='add_section_type'),
     path('delete_section_type/<int:section_type_id>/',
          views.delete_section_type, name='delete_section_type'),
+
+    #     the tech is viewing the template and it s sections vf
     path('lab_template/<int:lab_template_id>/',
          views.view_template_details, name='view_template_details'),
+
+
     path('lab_template/<int:lab_template_id>/delete_section/<int:section_id>/',
          views.delete_section, name='delete_section'),
     path('submit_lab_report/<int:lab_report_id>/',
@@ -76,7 +80,7 @@ urlpatterns = [
     path('lab-reports/grading/', views.lab_reports_for_grading,
          name='lab_reports_for_grading'),
 
-    #     when tech clickes on view grades
+    #     when tech clickes on view grades vf 
     path('lab-reports/grades/', views.view_grades, name='view_grades'),
     # urls.py
 
@@ -117,5 +121,17 @@ urlpatterns = [
     #     view results
     path('student_lab_reports/', views.student_lab_reports,
          name='student_lab_reports'),
+
+
+    # the first page when student views grades vf
+    path('student/<int:student_id>/lab_reports/',
+         views.student_lab_reports, name='student_lab_reports'),
+    # for student to view there delated grades vf
+    path('lab_report/<int:report_id>/student/<int:student_id>/marks/',
+         views.student_marks_detail, name='student_marks_detail'),
+
+
+
+
 
 ]

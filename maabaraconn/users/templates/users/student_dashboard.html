@@ -77,5 +77,21 @@
     <h2>My Grades</h2>
     <!-- Implementation depends on how Grades are stored and linked to the student -->
   </section>
+
+  
+
+  <h2>Welcome,c {{ user.username }}</h2>
+  <ul>
+    <li>
+     
+      {% comment %} <a href="{% url 'view_grades' lab_report.id %}">View Grades</a> {% endcomment %}
+
+
+      <li><a href="{% url 'student_lab_reports' user.id %}">My Lab Reports</a></li>
+    </li>
+    <!-- Other links -->
+  </ul>
+
+  
 </div>
 {% endblock %}

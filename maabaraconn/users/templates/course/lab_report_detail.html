@@ -6,7 +6,9 @@
     {% csrf_token %} {% for section in sections %}
     <div>
       <h3>{{ section.title }}</h3>
+      {% comment %}
       <p><strong>Instructions:</strong> {{ section.instructions }}</p>
+      {% endcomment %}
       <p><strong>Content:</strong></p>
       <!-- Display the content of the section -->
       <p>{{ section.content }}</p>
