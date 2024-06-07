@@ -35,4 +35,11 @@
   <p>You haven't created any courses yet.</p>
   {% endif %}
 </div>
+<a href="{% url 'view_all_creations' %}" class="btn btn-primary"
+  >View Activities</a
+>
+<a href="{% url 'view_student_activities' %}" class="btn btn-primary"
+  >View student activities</a
+>
+
 {% endblock %}

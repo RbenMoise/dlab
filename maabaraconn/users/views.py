@@ -1,3 +1,9 @@
+from .models import User, LabReport, StudentResponse, Grade, Course
+import logging
+from .models import Laboratory, LabTemplate, LabReport
+from .models import LabReport, User, StudentResponse, Grade
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import LabReport, StudentResponse
 from .models import LabReport, User
 from django.shortcuts import render, get_object_or_404
 from .models import LabReport
@@ -315,7 +321,7 @@ def student_dashboard(request):
     context = {
         'lab_reports': lab_reports,
     }
-    return render(request, 'students/dashboard.html', context)
+    return render(request, 'users/student_dashboard.html', context)
 
 
 @login_required
@@ -615,6 +621,8 @@ def save_grades(request, lab_report_id, student_id):
 
 
 # details for the spesific student responses for the labtech to grade
+
+
 def detailed_responses(request, report_id, student_id):
     lab_report = get_object_or_404(LabReport, id=report_id)
     student = get_object_or_404(User, id=student_id)
@@ -630,8 +638,11 @@ def detailed_responses(request, report_id, student_id):
                 lab_report=lab_report,
                 defaults={'score': total_marks, 'graded_by': request.user}
             )
-            messages.success(request, 'Grades submitted successfully.')
+            messages.success(
+                request, 'Grades and feedback submitted successfully.')
             return redirect('lab_report_detail_for_tech', lab_report.id)
+        else:
+            messages.error(request, 'There was an error with your submission.')
     else:
         form = GradeForm(responses=responses)
 
@@ -697,13 +708,13 @@ def student_marks_detail(request, report_id, student_id):
     responses = StudentResponse.objects.filter(
         lab_report=lab_report, student=student)
 
-    feedbacks = {response.id: response.feedback for response in responses}
+    # feedbacks = {response.id: response.feedback for response in responses}
 
     context = {
         'lab_report': lab_report,
         'student': student,
         'responses': responses,
-        'feedbacks': feedbacks,
+        # 'feedbacks': feedbacks,
     }
     return render(request, 'grading/student_marks_detail.html', context)
 
@@ -721,3 +732,56 @@ def student_lab_reports(request, student_id):
         'lab_reports': lab_reports,
     }
     return render(request, 'grading/student_lab_reports.html', context)
+
+
+@login_required
+# views.py
+def view_all_creations(request):
+    laboratories = Laboratory.objects.all()  # Temporarily fetch all laboratories
+    lab_templates = LabTemplate.objects.all()
+    lab_reports = LabReport.objects.all()
+
+    context = {
+        'laboratories': laboratories,
+        'lab_templates': lab_templates,
+        'lab_reports': lab_reports,
+    }
+    return render(request, 'grading/activities_view.html', context)
+
+
+def view_student_activities(request):
+    students = User.objects.filter(role=User.Role.STUDENT)
+    student_activities = []
+
+    for student in students:
+        student_data = {
+            'username': student.username,
+            'courses': student.enrolled_courses.all(),
+            'activities': []
+        }
+
+        student_reports = LabReport.objects.filter(creator=student)
+        for report in student_reports:
+            report_data = {
+                'title': report.title,
+                'template': report.template.name if report.template else 'N/A',
+                'responses': [],
+                'grade': 'N/A'
+            }
+
+            responses = StudentResponse.objects.filter(lab_report=report)
+            for response in responses:
+                report_data['responses'].append({
+                    'section': response.section.title,
+                    'response_text': response.response_text
+                })
+
+            grade = Grade.objects.filter(lab_report=report).first()
+            if grade:
+                report_data['grade'] = grade.score
+
+            student_data['activities'].append(report_data)
+
+        student_activities.append(student_data)
+
+    return render(request, 'grading/student_activities_view.html', {'students': student_activities})

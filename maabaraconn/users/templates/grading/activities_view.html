@@ -1,0 +1,91 @@
+<!-- grading/activities_view.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>All Creations</title>
+  </head>
+  <body>
+    <h1>All Creations</h1>
+
+    <h2>Created Laboratories:</h2>
+    {% if laboratories %}
+    <ul>
+      {% for lab in laboratories %}
+      <li>{{ lab.name }} - Created by {{ lab.creator.username }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>No laboratories created yet.</p>
+    {% endif %}
+
+    <h2>Created Lab Templates:</h2>
+    {% if lab_templates %}
+    <ul>
+      {% for template in lab_templates %}
+      <li>{{ template.name }} - Part of {{ template.laboratory.name }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>No lab templates created yet.</p>
+    {% endif %}
+
+    <h2>Created Lab Reports:</h2>
+    {% if lab_reports %}
+    <ul>
+      {% for report in lab_reports %}
+      <li>{{ report.title }} - Created by {{ report.creator.username }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>No lab reports created yet.</p>
+    {% endif %}
+
+    <h2>Lab Technician Activities:</h2>
+    {% if lab_technician_activities %}
+    <ul>
+      {% for report in lab_technician_activities %}
+      <li>{{ report.title }} - Created by {{ report.creator.username }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>No lab technician activities yet.</p>
+    {% endif %}
+
+    <h2>Student Activities:</h2>
+    {% if student_activities %}
+    <ul>
+      {% for activity in student_activities %}
+      <li>
+        <strong>Student:</strong> {{ activity.student.username }}<br />
+        <strong>Courses:</strong>
+        <ul>
+          {% for course in activity.courses %}
+          <li>{{ course.code }} - {{ course.name }}</li>
+          {% endfor %}
+        </ul>
+        <strong>Lab Report:</strong> {{ activity.lab_report.title }}<br />
+        <strong>Lab Template:</strong> {{ activity.lab_report.template.name
+        }}<br />
+        <strong>Section:</strong> {{ activity.lab_report.section }}<br />
+        <strong>Responses:</strong>
+        <ul>
+          {% for response in activity.responses %}
+          <li>
+            {{ response.section.title }}: {{ response.response_text }} (Marks:
+            {{ response.marks_awarded }}, Feedback: {{ response.feedback }})
+          </li>
+          {% endfor %}
+        </ul>
+        <strong>Grade:</strong> {{ activity.grade.score if activity.grade else
+        'N/A' }}<br />
+        <strong>Grade Feedback:</strong> {{ activity.grade.feedback if
+        activity.grade else 'N/A' }}<br />
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>No student activities yet.</p>
+    {% endif %}
+  </body>
+</html>

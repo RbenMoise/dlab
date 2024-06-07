@@ -51,10 +51,10 @@ class LaboratoryForm(forms.ModelForm):
         fields = ['name', 'course']
 
 
-class GradeForm(forms.ModelForm):
-    class Meta:
-        model = Grade
-        fields = ['score', 'feedback']
+# class GradeForm(forms.ModelForm):
+#     class Meta:
+#         model = Grade
+#         fields = ['score', 'feedback']
 
 
 class LabTemplateForm(forms.ModelForm):
@@ -79,13 +79,13 @@ class SectionTypeForm(forms.ModelForm):
         fields = ['name', 'default_content']
 
 
-class GradeForm(forms.ModelForm):
-    class Meta:
-        model = Grade
-        fields = ['score', 'feedback']
-        widgets = {
-            'feedback': forms.Textarea(attrs={'cols': 40, 'rows': 5})
-        }
+# class GradeForm(forms.ModelForm):
+#     class Meta:
+#         model = Grade
+#         fields = ['score', 'feedback']
+#         widgets = {
+#             'feedback': forms.Textarea(attrs={'cols': 40, 'rows': 5})
+#         }
 
 
 class GradeForm(forms.Form):
@@ -99,10 +99,19 @@ class GradeForm(forms.Form):
                 min_value=0,
                 max_value=response.section.marks
             )
+            self.fields[f'feedback_{response.id}'] = forms.CharField(
+                label=f"Feedback for {response.section.title}",
+                widget=forms.Textarea(attrs={'cols': 40, 'rows': 5}),
+                required=False,
+                initial=response.feedback
+            )
 
     def save(self):
         for field_name, value in self.cleaned_data.items():
-            response_id = field_name.split('_')[1]
+            field_type, response_id = field_name.split('_')
             response = StudentResponse.objects.get(id=response_id)
-            response.marks_awarded = value
+            if field_type == 'marks':
+                response.marks_awarded = value
+            elif field_type == 'feedback':
+                response.feedback = value
             response.save()

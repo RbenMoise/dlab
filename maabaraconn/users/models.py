@@ -35,6 +35,9 @@ class User(AbstractUser):
         related_query_name="user",
     )
 
+    def __str__(self):
+        return self.username
+
 
 class Course(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -139,9 +142,10 @@ class StudentResponse(models.Model):
     lab_report = models.ForeignKey(
         LabReport, on_delete=models.CASCADE, related_name='responses')
     marks_awarded = models.PositiveIntegerField(default=0)
+    feedback = models.TextField(blank=True)
 
     def __str__(self):
-        return f"Response by {self.student} for {self.section}"
+        return f"Response by {self.student.username} for {self.section}"
 
 
 class Grade(models.Model):
@@ -154,7 +158,8 @@ class Grade(models.Model):
     graded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Grade for {self.lab_report.student.username} - {self.score}/100"
+        return f"Grade for {self.lab_report.student} - {self.score}/100"
+# student.name was removed
 
 
 class LabReportSubmission(models.Model):

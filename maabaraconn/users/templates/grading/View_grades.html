@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Grades this is not pushed</title>
+  </head>
+  <body>
+    <h1>Grades for Lab Report: {{ lab_report.title }}</h1>
+
+    <ul>
+      {% for response in responses %}
+      <li>
+        <h2>Section: {{ response.section.title }}</h2>
+        <p>Response: {{ response.response_text }}</p>
+        <p>Marks Awarded: {{ response.marks_awarded }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>

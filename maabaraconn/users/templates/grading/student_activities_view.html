@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Activities</title>
+  </head>
+  <body>
+    <h1>Student Activities</h1>
+    {% for student in students %}
+    <h2>Student: {{ student.username }}</h2>
+    <ul>
+      <li>
+        <strong>Courses:</strong>
+        <ul>
+          {% for course in student.courses %}
+          <li>{{ course.code }} - {{ course.name }}</li>
+          {% endfor %}
+        </ul>
+      </li>
+      {% for activity in student.activities %}
+      <li>
+        <strong>Lab Report:</strong> {{ activity.title }}<br />
+        <strong>Lab Template:</strong> {{ activity.template }}<br />
+        <strong>Responses:</strong>
+        <ul>
+          {% for response in activity.responses %}
+          <li>{{ response.section }} - {{ response.response_text }}</li>
+          {% endfor %}
+        </ul>
+        <strong>Grade:</strong> {{ activity.grade }}
+      </li>
+      {% endfor %}
+    </ul>
+    {% endfor %}
+  </body>
+</html>

@@ -80,7 +80,7 @@ urlpatterns = [
     path('lab-reports/grading/', views.lab_reports_for_grading,
          name='lab_reports_for_grading'),
 
-    #     when tech clickes on view grades vf 
+    #     when tech clickes on view grades vf
     path('lab-reports/grades/', views.view_grades, name='view_grades'),
     # urls.py
 
@@ -131,7 +131,9 @@ urlpatterns = [
          views.student_marks_detail, name='student_marks_detail'),
 
 
-
-
+    path('activities/', views.view_student_activities,
+         name='view_student_activities'),
+    path('activities/labtech/', views.view_all_creations,
+         name='view_all_creations'),
 
 ]
