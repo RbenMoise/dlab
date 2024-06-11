@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Responses</title>
+  </head>
+  <body>
+    <h1>Student Responses</h1>
+    {% if student_responses_per_section %}
+    <ul>
+      {% for section, responses in student_responses_per_section.items %}
+      <li>
+        <h2>{{ section.title }}</h2>
+        <ul>
+          {% for response in responses %}
+          <li>{{ response.response_text }}</li>
+          <!-- Add more details if needed -->
+          {% endfor %}
+        </ul>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>No student responses found.</p>
+    {% endif %}
+  </body>
+</html>

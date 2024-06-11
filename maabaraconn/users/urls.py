@@ -130,10 +130,35 @@ urlpatterns = [
     path('lab_report/<int:report_id>/student/<int:student_id>/marks/',
          views.student_marks_detail, name='student_marks_detail'),
 
+    # vf to manage course by lec
+    path('courses/', views.view_courses, name='view_courses'),
 
-    path('activities/', views.view_student_activities,
+
+    # viewing student and tech activity
+    path('activities/', views.view_student_activity,
          name='view_student_activities'),
+
+    #   vf to view albtech details
     path('activities/labtech/', views.view_all_creations,
          name='view_all_creations'),
+
+
+    #  vf     viewing detaided activity of student vf
+    path('activities/students/', views.view_student_activities,
+         name='view_student_activities'),
+
+    # vf view coure details same ulr page
+    path('courses/<int:course_id>/', views.view_course_details,
+         name='view_course_details'),
+
+    # vf
+    path('students/', views.view_all_students, name='view_all_students'),
+
+    # vf
+    path('view_student_responses/', views.view_student_responses,
+         name='view_student_responses'),
+
+    path('lab_report/<int:report_id>/responses/',
+         views.view_responses, name='view_responses'),
 
 ]

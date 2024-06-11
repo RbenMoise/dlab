@@ -41,5 +41,30 @@
 <a href="{% url 'view_student_activities' %}" class="btn btn-primary"
   >View student activities</a
 >
-
+<a href="{% url 'view_student_activities' %}" class="btn btn-primary"
+  >View student grades</a
+>
+<p>This is the Lecturer Dashboard. Here, you can:</p>
+<ul>
+  <li><a href="{% url 'view_courses' %}">Manage Courses</a></li>
+  <li>
+    <a href="{% url 'view_all_creations' %}" class="btn btn-primary"
+      >View Activities</a
+    >
+  </li>
+  <li>
+    <a href="{% url 'view_student_activities' %}" class="btn btn-primary"
+      >View Student Activities</a
+    >
+  </li>
+  <li>
+    <a href="{% url 'view_all_students' %}" class="btn btn-primary"
+      >View All Student
+    </a>
+  </li>
+  <a href="{% url 'view_student_responses' %}" class="btn btn-primary"
+    >View Student Responses</a
+  >
+  <!-- Add more lecturer-specific functionality as needed -->
+</ul>
 {% endblock %}

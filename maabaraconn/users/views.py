@@ -1,3 +1,11 @@
+from collections import defaultdict
+from .models import User, Course, LabTemplate, TemplateSection, StudentResponse
+from .models import Course, Laboratory, LabReport
+from django.views.generic import ListView, DetailView
+from .models import User
+from .models import User, Course
+from .models import Course, LabReport, User
+from .models import LabReport, StudentResponse, Grade
 from .models import User, LabReport, StudentResponse, Grade, Course
 import logging
 from .models import Laboratory, LabTemplate, LabReport
@@ -749,7 +757,7 @@ def view_all_creations(request):
     return render(request, 'grading/activities_view.html', context)
 
 
-def view_student_activities(request):
+def view_student_activity(request):
     students = User.objects.filter(role=User.Role.STUDENT)
     student_activities = []
 
@@ -785,3 +793,119 @@ def view_student_activities(request):
         student_activities.append(student_data)
 
     return render(request, 'grading/student_activities_view.html', {'students': student_activities})
+
+
+def view_student_activities(request):
+    if not request.user.is_authenticated or request.user.role != User.Role.LECTURER:
+        return render(request, '403.html')  # or redirect to a login page
+
+    lab_reports = LabReport.objects.all().select_related(
+        'creator', 'course', 'laboratory', 'template').prefetch_related('responses')
+
+    context = {
+        'lab_reports': lab_reports,
+    }
+
+    return render(request, 'lecturer/student_activities.html', context)
+
+
+# View to list all courses for the lecturer
+# vf
+def view_courses(request):
+    if not request.user.is_authenticated or request.user.role != User.Role.LECTURER:
+        return render(request, '403.html')  # or redirect to a login page
+
+    courses = Course.objects.filter(lecturer=request.user)
+    context = {
+        'courses': courses,
+    }
+    return render(request, 'lecturer/courses.html', context)
+
+# View to list all lab reports and student activities for a specific course
+
+
+def view_course_details(request, course_id):
+    if not request.user.is_authenticated or request.user.role != User.Role.LECTURER:
+        return render(request, '403.html')  # or redirect to a login page
+
+    course = get_object_or_404(Course, id=course_id, lecturer=request.user)
+    lab_reports = LabReport.objects.filter(course=course).select_related(
+        'creator', 'laboratory', 'template').prefetch_related('responses__section', 'responses__student')
+
+    # Organize responses by section
+    section_responses = defaultdict(list)
+    for report in lab_reports:
+        for response in report.responses.all():
+            section_responses[response.section.id].append(response)
+
+    context = {
+        'course': course,
+        'lab_reports': lab_reports,
+        'section_responses': section_responses,
+    }
+    return render(request, 'lecturer/courses_details.html', context)
+
+
+# views.py
+
+
+def view_responses(request, report_id):
+    if not request.user.is_authenticated or request.user.role != User.Role.LECTURER:
+        return render(request, '403.html')
+
+    lab_report = get_object_or_404(LabReport, id=report_id)
+    responses = lab_report.responses.all()
+
+    context = {
+        'lab_report': lab_report,
+        'responses': responses,
+    }
+    return render(request, 'lecturer/view_responses.html', context)
+
+
+# vf
+
+
+def view_all_students(request):
+    # Fetch students directly from the database
+    students = User.objects.filter(role=User.Role.STUDENT)
+    print("Students Queryset:", students)
+
+    context = {
+        'students': students,
+    }
+    print("Context:", context)
+    return render(request, 'lecturer/view_all_students.html', context)
+
+
+def view_student_responses(request):
+    # Get the logged-in lecturer
+    lecturer = request.user
+
+    # Query all courses associated with the lecturer
+    courses = Course.objects.filter(lecturer=lecturer)
+
+    # Create an empty dictionary to store student responses per section
+    student_responses_per_section = {}
+
+    # Iterate through each course
+    for course in courses:
+        # Query lab templates associated with the course
+        lab_templates = LabTemplate.objects.filter(course=course)
+
+        # Iterate through each lab template
+        for lab_template in lab_templates:
+            # Query template sections associated with the lab template
+            template_sections = TemplateSection.objects.filter(
+                lab_template=lab_template)
+
+            # Iterate through each template section
+            for section in template_sections:
+                # Query student responses for the template section
+                responses = StudentResponse.objects.filter(section=section)
+
+                # Store the responses in the dictionary with section as key
+                student_responses_per_section[section] = responses
+
+    # Render the template with the data
+    return render(request, 'lecturer/view_student_responses.html', {'student_responses_per_section': student_responses_per_section})

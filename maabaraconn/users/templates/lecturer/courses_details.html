@@ -1,0 +1,36 @@
+{% extends "base.html" %} {% block content %}
+<h1>{{ course.code }} - {{ course.name }}</h1>
+
+{% for report in lab_reports %}
+<div class="report-section">
+  <h2>Lab Report: {{ report.title }} by {{ report.creator.username }}</h2>
+  <p><strong>Laboratory:</strong> {{ report.laboratory.name }}</p>
+  <p><strong>Submitted at:</strong> {{ report.submitted_at }}</p>
+  <p><strong>Status:</strong> {{ report.status }}</p>
+
+  {% if report.template %}
+  <h3>Template: {{ report.template.name }}</h3>
+  {% for section in report.template.sections.all %}
+  <div class="section">
+    <h4>Section: {{ section.title }}</h4>
+    <p><strong>Content:</strong> {{ section.content }}</p>
+    <p><strong>Marks:</strong> {{ section.marks }}</p>
+
+    <h5>Responses</h5>
+    <ul>
+      {% for response in section_responses.section.id %}
+      <li>
+        <strong>Student:</strong> {{ response.student.username }}<br />
+        <strong>Response:</strong> {{ response.response_text }}<br />
+        <strong>Marks awarded:</strong> {{ response.marks_awarded }} / {{
+        section.marks }}<br />
+        <strong>Feedback:</strong> {{ response.feedback }}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endfor %} {% else %}
+  <p>No template associated with this lab report.</p>
+  {% endif %}
+</div>
+{% endfor %} {% endblock %}

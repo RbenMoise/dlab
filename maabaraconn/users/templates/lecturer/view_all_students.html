@@ -1,0 +1,24 @@
+<!-- view_all_students.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>All Students and Their Courses</title>
+  </head>
+  <body>
+    <h1>All Students and Their Courses.</h1>
+    <ul>
+      {% for student in students %}
+      <li>
+        {{ student.username }}:
+        <ul>
+          {% for course in student.enrolled_courses.all %}
+          <li>{{ course }}</li>
+          {% endfor %}
+        </ul>
+      </li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
