@@ -1,3 +1,4 @@
+from .models import LabReport, TemplateSection
 from collections import defaultdict
 from .models import User, Course, LabTemplate, TemplateSection, StudentResponse
 from .models import Course, Laboratory, LabReport
@@ -845,19 +846,20 @@ def view_course_details(request, course_id):
     }
     return render(request, 'lecturer/courses_details.html', context)
 
+# vf for lec to view sectios for students
 
-# views.py
 
-
-def view_responses(request, report_id):
+def view_section_responses(request, report_id, section_id):
     if not request.user.is_authenticated or request.user.role != User.Role.LECTURER:
         return render(request, '403.html')
 
     lab_report = get_object_or_404(LabReport, id=report_id)
-    responses = lab_report.responses.all()
+    section = get_object_or_404(TemplateSection, id=section_id)
+    responses = lab_report.responses.filter(section=section)
 
     context = {
         'lab_report': lab_report,
+        'section': section,
         'responses': responses,
     }
     return render(request, 'lecturer/view_responses.html', context)

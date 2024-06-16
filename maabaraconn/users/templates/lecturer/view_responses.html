@@ -1,0 +1,24 @@
+<!-- templates/lecturer/view_section_responses.html -->
+{% extends "base.html" %} {% block content %}
+<div class="container mt-4">
+  <h2>Responses for Section: {{ section.title }}</h2>
+  <p><strong>Course:</strong> {{ lab_report.course.name }}</p>
+  <p><strong>Laboratory:</strong> {{ lab_report.laboratory.name }}</p>
+  <p><strong>Template:</strong> {{ lab_report.template.name }}</p>
+  <p><strong>Section Title:</strong> {{ section.title }}</p>
+  <p><strong>Section Content:</strong> {{ section.content }}</p>
+  <p><strong>Marks:</strong> {{ section.marks }}</p>
+
+  <h3>Student Responses</h3>
+  <div class="list-group">
+    {% for response in responses %}
+    <a href="#" class="list-group-item list-group-item-action">
+      <h5 class="mb-1">Student: {{ response.student.username }}</h5>
+      <p class="mb-1">{{ response.response_text }}</p>
+      <small>Marks Awarded: {{ response.marks_awarded }}</small><br />
+      <small>Feedback: {{ response.feedback }}</small>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

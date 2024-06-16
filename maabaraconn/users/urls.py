@@ -157,8 +157,8 @@ urlpatterns = [
     # vf
     path('view_student_responses/', views.view_student_responses,
          name='view_student_responses'),
-
-    path('lab_report/<int:report_id>/responses/',
-         views.view_responses, name='view_responses'),
+    # vf lect to sections
+    path('lab_report/<int:report_id>/section/<int:section_id>/responses/',
+         views.view_section_responses, name='view_section_responses'),
 
 ]
