@@ -1,0 +1,28 @@
+{% extends "base.html" %} {% block content %}
+<h1>Student Activities</h1>
+
+{% for report in lab_reports %}
+<h2>{{ report.title }} by {{ report.creator.username }}</h2>
+<p>Course: {{ report.course.code }} - {{ report.course.name }}</p>
+<p>Laboratory: {{ report.laboratory.name }}</p>
+<p>Submitted at: {{ report.submitted_at }}</p>
+<p>Status: {{ report.status }}</p>
+<h3>Responses</h3>
+<ul>
+  {% for response in report.responses.all %}
+  <li>
+    <strong>{{ response.section.title }}</strong>: {{ response.response_text
+    }}<br />
+    Marks awarded: {{ response.marks_awarded }} / {{ response.section.marks
+    }}<br />
+    Feedback: {{ response.feedback }}
+  </li>
+  {% endfor %}
+</ul>
+<h3>Grade</h3>
+{% if report.grade %}
+<p>Score: {{ report.grade.score }}</p>
+<p>Feedback: {{ report.grade.feedback }}</p>
+{% else %}
+<p>Grade: N/A</p>
+{% endif %} {% endfor %} {% endblock %}
