@@ -848,6 +848,8 @@ def view_course_details(request, course_id):
 
 # vf for lec to view sectios for students
 
+# vf lec view responses
+
 
 def view_section_responses(request, report_id, section_id):
     if not request.user.is_authenticated or request.user.role != User.Role.LECTURER:
@@ -884,30 +886,38 @@ def view_student_responses(request):
     # Get the logged-in lecturer
     lecturer = request.user
 
-    # Query all courses associated with the lecturer
-    courses = Course.objects.filter(lecturer=lecturer)
+    # Query all lab reports submitted by students for courses taught by the lecturer
+    lab_reports = LabReport.objects.filter(
+        course__lecturer=lecturer
+    ).select_related('course', 'creator', 'laboratory')
 
-    # Create an empty dictionary to store student responses per section
+    # Create a dictionary to store detailed information per section
     student_responses_per_section = {}
 
-    # Iterate through each course
-    for course in courses:
-        # Query lab templates associated with the course
-        lab_templates = LabTemplate.objects.filter(course=course)
+    # Iterate through each lab report
+    for lab_report in lab_reports:
+        # Fetch all responses related to this lab report
+        responses = StudentResponse.objects.filter(
+            lab_report=lab_report
+        ).select_related('section')
 
-        # Iterate through each lab template
-        for lab_template in lab_templates:
-            # Query template sections associated with the lab template
-            template_sections = TemplateSection.objects.filter(
-                lab_template=lab_template)
+        # Iterate through each response
+        for response in responses:
+            section = response.section
+            if section not in student_responses_per_section:
+                # Initialize an empty list for responses under this section
+                student_responses_per_section[section] = []
 
-            # Iterate through each template section
-            for section in template_sections:
-                # Query student responses for the template section
-                responses = StudentResponse.objects.filter(section=section)
-
-                # Store the responses in the dictionary with section as key
-                student_responses_per_section[section] = responses
+            # Append response details to the list under the corresponding section
+            student_responses_per_section[section].append({
+                'student': lab_report.creator,
+                'response_text': response.response_text,
+                'marks_awarded': response.marks_awarded,
+                'section_marks': section.marks,
+                'feedback': response.feedback,
+                'grade': lab_report.grade.score if lab_report.grade else None,
+                'overall_feedback': lab_report.grade.feedback if lab_report.grade else None,
+            })
 
     # Render the template with the data
     return render(request, 'lecturer/view_student_responses.html', {'student_responses_per_section': student_responses_per_section})

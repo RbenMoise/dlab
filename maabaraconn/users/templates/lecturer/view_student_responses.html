@@ -7,6 +7,7 @@
   </head>
   <body>
     <h1>Student Responses</h1>
+
     {% if student_responses_per_section %}
     <ul>
       {% for section, responses in student_responses_per_section.items %}
@@ -14,8 +15,17 @@
         <h2>{{ section.title }}</h2>
         <ul>
           {% for response in responses %}
-          <li>{{ response.response_text }}</li>
-          <!-- Add more details if needed -->
+          <li>
+            <strong>Student: </strong>{{ response.student.username }}<br />
+            <strong>Response: </strong>{{ response.response_text }}<br />
+            <strong>Marks Awarded: </strong>
+            {{ response.marks_awarded }} / {{ response.section_marks }}<br />
+            <strong>Feedback: </strong>{{ response.feedback }}<br />
+            <strong>Grade: </strong>{{ response.grade }}<br />
+            <strong>Overall Feedback: </strong>{{ response.overall_feedback }}
+          </li>
+          <hr />
+          <!-- Optional: Add a horizontal line between responses -->
           {% endfor %}
         </ul>
       </li>
