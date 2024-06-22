@@ -1,4 +1,3 @@
-<!-- templates/lecturer/view_section_responses.html -->
 {% extends "base.html" %} {% block content %}
 <div class="container mt-4">
   <h2>Responses for Section: {{ section.title }}</h2>
@@ -12,12 +11,22 @@
   <h3>Student Responses</h3>
   <div class="list-group">
     {% for response in responses %}
-    <a href="#" class="list-group-item list-group-item-action">
+    <div class="list-group-item list-group-item-action">
       <h5 class="mb-1">Student: {{ response.student.username }}</h5>
       <p class="mb-1">{{ response.response_text }}</p>
       <small>Marks Awarded: {{ response.marks_awarded }}</small><br />
-      <small>Feedback: {{ response.feedback }}</small>
-    </a>
+      <small>Feedback: {{ response.feedback }}</small><br />
+      <form method="post" class="mt-2">
+        {% csrf_token %}
+        <input type="hidden" name="response_id" value="{{ response.id }}" />
+        <textarea name="feedback" class="form-control" rows="3">
+{{ response.feedback }}</textarea
+        >
+        <button type="submit" class="btn btn-primary mt-2">
+          Update Feedback
+        </button>
+      </form>
+    </div>
     {% endfor %}
   </div>
 </div>
