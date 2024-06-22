@@ -1,3 +1,4 @@
+<!-- In view_responses.html -->
 {% extends "base.html" %} {% block content %}
 <div class="container mt-4">
   <h2>Responses for Section: {{ section.title }}</h2>
@@ -11,20 +12,35 @@
   <h3>Student Responses</h3>
   <div class="list-group">
     {% for response in responses %}
-    <div class="list-group-item list-group-item-action">
+    <div class="list-group-item">
       <h5 class="mb-1">Student: {{ response.student.username }}</h5>
       <p class="mb-1">{{ response.response_text }}</p>
-      <small>Marks Awarded: {{ response.marks_awarded }}</small><br />
-      <small>Feedback: {{ response.feedback }}</small><br />
-      <form method="post" class="mt-2">
+      <p><strong>Marks Awarded:</strong> {{ response.marks_awarded }}</p>
+      <p><strong>Labtech Feedback:</strong></p>
+      <p>
+        {% if response.feedback %} {{ response.feedback }} {% else %} No
+        feedback provided by labtech. {% endif %}
+      </p>
+
+      <!-- Form to add lecturer feedback -->
+      <form
+        method="post"
+        action="{% url 'view_section_responses' report_id=lab_report.id section_id=section.id %}"
+      >
         {% csrf_token %}
         <input type="hidden" name="response_id" value="{{ response.id }}" />
-        <textarea name="feedback" class="form-control" rows="3">
-{{ response.feedback }}</textarea
-        >
-        <button type="submit" class="btn btn-primary mt-2">
-          Update Feedback
-        </button>
+        <div class="form-group">
+          <label for="lecturer_feedback">Lecturer Feedback:</label>
+          <textarea
+            class="form-control"
+            id="lecturer_feedback"
+            name="lecturer_feedback"
+            rows="4"
+          >
+{{ response.lecturer_feedback }}</textarea
+          >
+        </div>
+        <button type="submit" class="btn btn-primary">Save Feedback</button>
       </form>
     </div>
     {% endfor %}

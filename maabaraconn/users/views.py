@@ -859,25 +859,25 @@ def view_section_responses(request, report_id, section_id):
     section = get_object_or_404(TemplateSection, id=section_id)
     responses = lab_report.responses.filter(section=section)
 
+    if request.method == 'POST':
+        # Process form submission to add lecturer feedback
+        response_id = request.POST.get('response_id')
+        lecturer_feedback = request.POST.get('lecturer_feedback')
+
+        if response_id and lecturer_feedback:
+            response = get_object_or_404(StudentResponse, id=response_id)
+            response.lecturer_feedback = lecturer_feedback
+            response.save()
+            messages.success(request, 'Lecturer feedback added successfully.')
+
+            # Redirect to avoid form resubmission on page refresh
+            return redirect('view_section_responses', report_id=report_id, section_id=section_id)
+
     context = {
         'lab_report': lab_report,
         'section': section,
         'responses': responses,
     }
-
-    if request.method == 'POST':
-        response_id = request.POST.get('response_id')
-        feedback = request.POST.get('feedback')
-
-        # Update the feedback for the selected response
-        try:
-            response = StudentResponse.objects.get(id=response_id)
-            response.feedback = feedback
-            response.save()
-            messages.success(request, 'Feedback updated successfully.')
-            return redirect('view_section_responses', report_id=report_id, section_id=section_id)
-        except StudentResponse.DoesNotExist:
-            messages.error(request, 'Response not found.')
 
     return render(request, 'lecturer/view_responses.html', context)
 
