@@ -22,7 +22,7 @@
         feedback provided by labtech. {% endif %}
       </p>
 
-      <!-- Form to add lecturer feedback -->
+      <!-- Form to add/update lecturer feedback -->
       <form
         method="post"
         action="{% url 'view_section_responses' report_id=lab_report.id section_id=section.id %}"
@@ -30,10 +30,12 @@
         {% csrf_token %}
         <input type="hidden" name="response_id" value="{{ response.id }}" />
         <div class="form-group">
-          <label for="lecturer_feedback">Lecturer Feedback:</label>
+          <label for="lecturer_feedback_{{ response.id }}"
+            >Lecturer Feedback:</label
+          >
           <textarea
             class="form-control"
-            id="lecturer_feedback"
+            id="lecturer_feedback_{{ response.id }}"
             name="lecturer_feedback"
             rows="4"
           >
