@@ -1,3 +1,5 @@
+from .models import LabReport, User, StudentResponse
+from .models import LabReport, TemplateSection, StudentResponse, User
 from .models import LabReport, TemplateSection
 from collections import defaultdict
 from .models import User, Course, LabTemplate, TemplateSection, StudentResponse
@@ -700,6 +702,20 @@ def student_marks_detail(request, report_id, student_id):
     responses = StudentResponse.objects.filter(
         lab_report=lab_report, student=student)
 
+    if request.method == 'POST':
+        response_id = request.POST.get('response_id')
+        student_feedback = request.POST.get('student_feedback')
+
+        if response_id and student_feedback:
+            response = get_object_or_404(StudentResponse, id=response_id)
+            response.student_feedback = student_feedback
+            response.save()
+            messages.success(
+                request, 'Your feedback has been submitted successfully.')
+
+            # Redirect to prevent form resubmission on page refresh
+            return redirect('student_marks_detail', report_id=report_id, student_id=student_id)
+
     feedbacks = {response.id: response.feedback for response in responses}
 
     context = {
@@ -710,22 +726,6 @@ def student_marks_detail(request, report_id, student_id):
     }
     return render(request, 'grading/student_marks_detail.html', context)
 
-
-def student_marks_detail(request, report_id, student_id):
-    lab_report = get_object_or_404(LabReport, id=report_id)
-    student = get_object_or_404(User, id=student_id)
-    responses = StudentResponse.objects.filter(
-        lab_report=lab_report, student=student)
-
-    # feedbacks = {response.id: response.feedback for response in responses}
-
-    context = {
-        'lab_report': lab_report,
-        'student': student,
-        'responses': responses,
-        # 'feedbacks': feedbacks,
-    }
-    return render(request, 'grading/student_marks_detail.html', context)
 
 # first page for students to see grades vf
 
