@@ -19,7 +19,7 @@ admin.site.register(TemplateSection)
 @admin.register(StudentResponse)
 class StudentResponseAdmin(admin.ModelAdmin):
     list_display = ('id', 'student', 'lab_report',
-                    'section', 'marks_awarded', 'feedback')
+                    'section', 'marks_awarded', 'tech_feedback')
     list_filter = ('lab_report', 'student')
     search_fields = ('student__username',
                      'lab_report__title', 'section__title')

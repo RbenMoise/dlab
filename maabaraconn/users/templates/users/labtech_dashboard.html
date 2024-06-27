@@ -145,4 +145,13 @@
 </ul>
 
 
+<h1>List of Lab Reports that are already graded</h1>
+<ul>
+    {% for lab_report in lab_reports %}
+    <li>
+        <a href="{% url 'lab_report_student_grades' lab_report_id=lab_report.id %}">{{ lab_report.title }}</a>
+    </li>
+    {% endfor %}
+</ul>
+
 {% endblock %}

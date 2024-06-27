@@ -161,4 +161,6 @@ urlpatterns = [
     path('lab_report/<int:report_id>/section/<int:section_id>/responses/',
          views.view_section_responses, name='view_section_responses'),
 
+    path('lab_reports/<int:lab_report_id>/student_grades/',
+         views.lab_report_student_grades_view, name='lab_report_student_grades'),
 ]

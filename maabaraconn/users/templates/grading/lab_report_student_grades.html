@@ -1,0 +1,43 @@
+{% extends 'base.html' %} {% block content %}
+<h2>Details for Lab Report: {{ lab_report.title }}</h2>
+<p><strong>Description:</strong> {{ lab_report.description }}</p>
+<p><strong>Created By:</strong> {{ lab_report.creator.username }}</p>
+<p><strong>Created on:</strong> {{ lab_report.submitted_at }}</p>
+<p><strong>Total Students:</strong> {{ student_responses.count }}</p>
+<p><strong>Average Marks:</strong> {{ average_marks|default:"N/A" }}</p>
+
+<h2>Lab Report Sections and Student Responses</h2>
+
+{% for section in lab_report.template.sections.all %}
+<h3>{{ section.title }}</h3>
+<p><strong>Section Type:</strong> {{ section.section_type.name }}</p>
+<p><strong>Marks for this Section:</strong> {{ section.marks }}</p>
+<p>{{ section.content }}</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Student</th>
+      <th>Response Text</th>
+      <th>Marks Awarded</th>
+      <th>Lecturer Feedback</th>
+      <th>Student Feedback</th>
+      <th>Tech Feedback</th>
+      <th>Submission Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for response in student_responses %} {% if response.section == section %}
+    <tr>
+      <td>{{ response.student.username }}</td>
+      <td>{{ response.response_text }}</td>
+      <td>{{ response.marks_awarded }}</td>
+      <td>{{ response.lecturer_feedback }}</td>
+      <td>{{ response.student_feedback }}</td>
+      <td>{{ response.tech_feedback }}</td>
+      <td>{{ response.submitted_at }}</td>
+    </tr>
+    {% endif %} {% endfor %}
+  </tbody>
+</table>
+{% endfor %} {% endblock %}

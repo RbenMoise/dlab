@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from .models import LabReport, User, StudentResponse
 from .models import LabReport, TemplateSection, StudentResponse, User
 from .models import LabReport, TemplateSection
@@ -162,6 +163,7 @@ def dashboard(request):
         templates = LabTemplate.objects.all()
         my_lab_reports = LabReport.objects.filter(creator=request.user)
         section_types = SectionType.objects.all()
+        lab_reports = LabReport.objects.all()
         context = {
             'templates': templates,
             'section_types': section_types,
@@ -170,6 +172,7 @@ def dashboard(request):
             'course_id': course_id,
             'courses': courses,
             'lab_reports_to_process': lab_reports_to_process,
+            'lab_reports': lab_reports,
         }
         return render(request, 'users/labtech_dashboard.html', context)
     else:
@@ -933,3 +936,17 @@ def view_student_responses(request):
 
     # Render the template with the data
     return render(request, 'lecturer/view_student_responses.html', {'student_responses_per_section': student_responses_per_section})
+
+
+def lab_report_student_grades_view(request, lab_report_id):
+    lab_report = get_object_or_404(LabReport, id=lab_report_id)
+    student_responses = StudentResponse.objects.filter(
+        lab_report=lab_report).exclude(marks_awarded=None)
+    average_marks = student_responses.aggregate(Avg('marks_awarded'))[
+        'marks_awarded__avg']
+
+    return render(request, 'grading/lab_report_student_grades.html', {
+        'lab_report': lab_report,
+        'student_responses': student_responses,
+        'average_marks': average_marks,
+    })
