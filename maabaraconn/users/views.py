@@ -716,13 +716,10 @@ def student_marks_detail(request, report_id, student_id):
             # Redirect to prevent form resubmission on page refresh
             return redirect('student_marks_detail', report_id=report_id, student_id=student_id)
 
-    feedbacks = {response.id: response.feedback for response in responses}
-
     context = {
         'lab_report': lab_report,
         'student': student,
         'responses': responses,
-        'feedbacks': feedbacks,
     }
     return render(request, 'grading/student_marks_detail.html', context)
 

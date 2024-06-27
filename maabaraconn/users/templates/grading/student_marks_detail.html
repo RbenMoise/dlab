@@ -1,8 +1,5 @@
 {% extends 'base.html' %} {% block content %}
-
 <h2>Marks for {{ student.username }} - {{ lab_report.title }}</h2>
-<h2>Lab Report: {{ lab_report.title }}</h2>
-
 <h2>Lab Report: {{ lab_report.title }}</h2>
 
 {% if responses %}
@@ -12,11 +9,12 @@
       <th>Section Type</th>
       <th>Title</th>
       <th>Content</th>
-      {% comment %}
-      <th>Visible to Students</th>
-      {% endcomment %}
       <th>Marks Awarded</th>
       <th>Max Marks</th>
+      <th>General Feedback</th>
+      <th>Lecturer Feedback</th>
+      <th>Student Feedback</th>
+      <th>Submit Your Feedback</th>
     </tr>
   </thead>
   <tbody>
@@ -25,23 +23,25 @@
       <td>{{ response.section.section_type.name }}</td>
       <td>{{ response.section.title }}</td>
       <td>{{ response.section.content }}</td>
-      {% comment %}
-      <td>{{ response.section.visible_to_students }}</td>
-      {% endcomment %}
       <td>{{ response.marks_awarded }}</td>
       <td>{{ response.section.marks }}</td>
+      <td>{{ response.feedback }}</td>
+      <td>{{ response.lecturer_feedback }}</td>
+      <td>{{ response.student_feedback }}</td>
+      <td>
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="response_id" value="{{ response.id }}" />
+          <textarea name="student_feedback">
+{{ response.student_feedback }}</textarea
+          >
+          <button type="submit">Submit Feedback</button>
+        </form>
+      </td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
 {% else %}
 <p>No responses have been submitted yet for this lab report.</p>
-{% endif %}
-
-<h3>Provide Feedback</h3>
-<form method="post">
-  {% csrf_token %} {{ feedback_form.as_p }}
-  <button type="submit">Submit Feedback</button>
-</form>
-
-{% endblock %}
+{% endif %} {% endblock %}

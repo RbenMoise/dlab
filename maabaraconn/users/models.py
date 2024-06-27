@@ -143,7 +143,8 @@ class StudentResponse(models.Model):
         LabReport, on_delete=models.CASCADE, related_name='responses')
     marks_awarded = models.PositiveIntegerField(default=0)
     feedback = models.TextField(blank=True)
-    lecturer_feedback = models.TextField(blank=True)  # Add this line
+    lecturer_feedback = models.TextField(blank=True)
+    student_feedback = models.TextField(blank=True)
 
     def __str__(self):
         return f"Response by {self.student.username} for {self.section}"
