@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} {% block content %}{% load static %} {% comment %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}" />
+{% endcomment %}
 <h2>Details for Lab Report: {{ lab_report.title }}</h2>
 <p><strong>Description:</strong> {{ lab_report.description }}</p>
 <p><strong>Created By:</strong> {{ lab_report.creator.username }}</p>

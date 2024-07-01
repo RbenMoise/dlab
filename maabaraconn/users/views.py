@@ -520,15 +520,15 @@ def submit_lab_report(request, lab_id):
 # when tech clicks on view grades
 
 
-@login_required
-def view_grades(request):
-    if request.user.role == User.Role.LAB_TECH:
-        reports = LabReport.objects.filter(grade__isnull=False).select_related(
-            'student', 'creator', 'laboratory', 'grade').order_by('-submitted_at')
-    else:
-        reports = LabReport.objects.none()  # No access for other roles
+# @login_required
+# def view_grades(request):
+#     if request.user.role == User.Role.LAB_TECH:
+#         reports = LabReport.objects.filter(grade__isnull=False).select_related(
+#             'student', 'creator', 'laboratory', 'grade').order_by('-submitted_at')
+#     else:
+#         reports = LabReport.objects.none()  # No access for other roles
 
-    return render(request, 'course/view_grades.html', {'reports': reports})
+#     return render(request, 'course/view_grades.html', {'reports': reports})
 
 
 def student_lab_report_responses(request, lab_report_id):

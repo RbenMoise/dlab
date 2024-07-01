@@ -81,8 +81,8 @@ urlpatterns = [
          name='lab_reports_for_grading'),
 
     #     when tech clickes on view grades vf
-    path('lab-reports/grades/', views.view_grades, name='view_grades'),
-    # urls.py
+    #     path('lab-reports/grades/', views.view_grades, name='view_grades'),
+    #     # urls.py
 
     path('lab-report/<int:lab_report_id>/responses/',
          views.student_lab_report_responses, name='student_lab_report_responses'),
