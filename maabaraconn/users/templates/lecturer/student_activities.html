@@ -1,13 +1,76 @@
 {% extends "base.html" %} {% block content %}
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f8f9fa;
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    color: #007bff;
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    color: #343a40;
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    color: #007bff;
+    margin-bottom: 5px;
+  }
+
+  p {
+    margin-bottom: 5px;
+  }
+
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+
+  ul li {
+    margin-bottom: 15px;
+    border: 1px solid #dee2e6;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  ul li:hover {
+    background-color: #f8f9fa;
+  }
+
+  hr {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border: none;
+    border-top: 1px solid #dee2e6;
+  }
+
+  .no-responses {
+    font-style: italic;
+    color: #6c757d;
+  }
+</style>
+
 <h1>Student Activities</h1>
 
 {% for report in lab_reports %}
-<div style="margin-bottom: 20px">
+<div style="margin-bottom: 15px">
   <h2>{{ report.title }} by {{ report.creator.username }}</h2>
-  <p>Course: {{ report.course.code }} - {{ report.course.name }}</p>
-  <p>Laboratory: {{ report.laboratory.name }}</p>
-  <p>Submitted at: {{ report.submitted_at }}</p>
-  <p>Status: {{ report.status }}</p>
+  <p>
+    <strong>Course:</strong> {{ report.course.code }} - {{ report.course.name }}
+  </p>
+  <p><strong>Laboratory:</strong> {{ report.laboratory.name }}</p>
+  <p><strong>Submitted at:</strong> {{ report.submitted_at }}</p>
+  <p><strong>Status:</strong> {{ report.status }}</p>
 
   <hr />
 
@@ -19,17 +82,17 @@
     {% endfor %}
   </ul>
   {% else %}
-  <p>No responses yet.</p>
+  <p class="no-responses">No responses yet.</p>
   {% endif %}
 
   <hr />
 
   <h3>Grade</h3>
   {% if report.grade %}
-  <p>Score: {{ report.grade.score }}</p>
-  <p>Feedback: {{ report.grade.feedback }}</p>
+  <p><strong>Score:</strong> {{ report.grade.score }}</p>
+  <p><strong>Feedback:</strong> {{ report.grade.feedback }}</p>
   {% else %}
-  <p>Grade: N/A</p>
+  <p><strong>Grade:</strong> N/A</p>
   {% endif %}
 </div>
 {% endfor %} {% endblock %}
