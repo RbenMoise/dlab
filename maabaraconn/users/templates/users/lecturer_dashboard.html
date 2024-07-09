@@ -1,70 +1,82 @@
 {% extends 'base.html' %} {% block content %}
-<h2>Welcome, {{ request.user.username }}!</h2>
-<p>This is the Lecturer Dashboard. Here, you can:</p>
-<ul>
-  {% comment %}
-  <li><a href="{% url 'grade_report' %}">Grade Reports</a></li>
-  {% endcomment %}
-  <li>Grade Reports</li>
-  <li>Assign grades</li>
-  <!-- Add more lecturer-specific functionality as needed -->
-</ul>
-<div class="container">
-  <h2>Lecturer Dashboard</h2>
-  <!-- Link to Add New Course -->
-  <a href="{% url 'add_course' %}" class="btn btn-primary">Add New Course</a>
-
-  <h3>Your Courses:</h3>
-  {% if courses %}
-  <ul>
-    {% for course in courses %}
-    <li>{{ course.name }} ({{ course.code }})</li>
-    <!-- Add options to edit or delete courses here -->
-    <!-- Delete Button -->
-    <form
-      action="{% url 'delete_course' course.id %}"
-      method="post"
-      style="display: inline"
-    >
-      {% csrf_token %}
-      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-    </form>
-    {% endfor %}
+<div class="container mt-5">
+  <h2 class="mb-4">Welcome, {{ request.user.username }}!</h2>
+  <p>This is the Lecturer Dashboard. Here, you can:</p>
+  <ul class="list-group mb-4">
+    <li class="list-group-item">Grade Reports</li>
+    <li class="list-group-item">Assign grades</li>
+    <!-- Add more lecturer-specific functionality as needed -->
   </ul>
-  {% else %}
-  <p>You haven't created any courses yet.</p>
-  {% endif %}
-</div>
-<a href="{% url 'view_all_creations' %}" class="btn btn-primary"
-  >View Activities</a
->
-<a href="{% url 'view_student_activities' %}" class="btn btn-primary"
-  >View student activities</a
->
-<a href="{% url 'view_student_activities' %}" class="btn btn-primary"
-  >View student grades</a
->
-<p>This is the Lecturer Dashboard. Here, you can:</p>
-<ul>
-  <li><a href="{% url 'view_courses' %}">Manage Courses</a></li>
-  <li>
+
+  <div class="container mb-4">
+    <h2 class="mb-4">Lecturer Dashboard</h2>
+    <!-- Link to Add New Course -->
+    <a href="{% url 'add_course' %}" class="btn btn-primary mb-3"
+      >Add New Course</a
+    >
+
+    <h3 class="mb-3">Your Courses:</h3>
+    {% if courses %}
+    <ul class="list-group">
+      {% for course in courses %}
+      <li
+        class="list-group-item d-flex justify-content-between align-items-center"
+      >
+        {{ course.name }} ({{ course.code }})
+        <!-- Delete Button -->
+        <form
+          action="{% url 'delete_course' course.id %}"
+          method="post"
+          class="mb-0"
+        >
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>You haven't created any courses yet.</p>
+    {% endif %}
+  </div>
+
+  <div class="btn-group mb-4" role="group">
     <a href="{% url 'view_all_creations' %}" class="btn btn-primary"
       >View Activities</a
     >
-  </li>
-  <li>
     <a href="{% url 'view_student_activities' %}" class="btn btn-primary"
       >View Student Activities</a
     >
-  </li>
-  <li>
-    <a href="{% url 'view_all_students' %}" class="btn btn-primary"
-      >View All Student
-    </a>
-  </li>
-  <a href="{% url 'view_student_responses' %}" class="btn btn-primary"
-    >View Student Responses</a
-  >
-  <!-- Add more lecturer-specific functionality as needed -->
-</ul>
+    <!-- Update the href when the URL pattern is fixed -->
+    <a href="#" class="btn btn-primary">View Student Grades</a>
+  </div>
+
+  <p>This is the Lecturer Dashboard. Here, you can:</p>
+  <ul class="list-group mb-4">
+    <li class="list-group-item">
+      <a href="{% url 'view_courses' %}" class="btn btn-link">Manage Courses</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{% url 'view_all_creations' %}" class="btn btn-link"
+        >View Activities</a
+      >
+    </li>
+    <li class="list-group-item">
+      <a href="{% url 'view_student_activities' %}" class="btn btn-link"
+        >View Student Activities</a
+      >
+    </li>
+    <li class="list-group-item">
+      <a href="{% url 'view_all_students' %}" class="btn btn-link"
+        >View All Students</a
+      >
+    </li>
+    <li class="list-group-item">
+      <a href="{% url 'view_student_responses' %}" class="btn btn-link"
+        >View Student Responses</a
+      >
+    </li>
+    <!-- Add more lecturer-specific functionality as needed -->
+  </ul>
+</div>
 {% endblock %}
