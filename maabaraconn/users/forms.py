@@ -8,12 +8,18 @@ from .models import User
 
 
 class UserRegistrationForm(UserCreationForm):
-    # Add a role field
     role = forms.ChoiceField(choices=User.Role.choices, required=True)
 
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2', 'role']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'password1': forms.PasswordInput(attrs={'class': 'form-control'}),
+            'password2': forms.PasswordInput(attrs={'class': 'form-control'}),
+            'role': forms.Select(attrs={'class': 'form-control'}),
+        }
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -103,7 +109,7 @@ class GradeForm(forms.Form):
                 label=f"Feedback for {response.section.title}",
                 widget=forms.Textarea(attrs={'cols': 40, 'rows': 5}),
                 required=False,
-                initial=response.feedback
+                # initial=response.feedback
             )
 
     def save(self):

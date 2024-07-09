@@ -15,8 +15,8 @@ urlpatterns = [
 
 
     path('register/', views.register, name='register'),
-    path('add_course/', views.CourseCreateView.as_view(),
-         name='add_course'),
+    #     path('add_course/', views.CourseCreateView.as_view(),
+    #          name='add_course'),
     path('submit_report/', views.LabReportSubmitView.as_view(),
          name='submit_report'),
     path('grade_report/<int:pk>/',
@@ -28,6 +28,8 @@ urlpatterns = [
     path('dashboard/lecturer/', views.dashboard,
          name='lecturer_dashboard'),
     path('dashboard/labtech/', views.dashboard, name='labtech_dashboard'),
+
+    # vf
     path('add_course/', views.CourseCreateView.as_view(), name='add_course'),
     path('delete_course/<int:course_id>/',
          views.delete_course, name='delete_course'),

@@ -65,11 +65,11 @@ def register(request):
     return render(request, 'registration/register.html', {'form': form})
 
 
-class CourseCreateView(CreateView):
-    model = Course
-    form_class = CourseForm
-    template_name = 'course/add_course.html'
-    success_url = '/courses/'
+# class CourseCreateView(CreateView):
+#     model = Course
+#     form_class = CourseForm
+#     template_name = 'course/add_course.html'
+#     success_url = '/courses/'
 
 
 class LabReportSubmitView(CreateView):
