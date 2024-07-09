@@ -1,3 +1,4 @@
+from users.models import LabReport, StudentResponse, TemplateSection
 from django.db.models import Avg
 from .models import LabReport, User, StudentResponse
 from .models import LabReport, TemplateSection, StudentResponse, User
@@ -902,40 +903,54 @@ def view_student_responses(request):
     lecturer = request.user
 
     # Query all lab reports submitted by students for courses taught by the lecturer
-    lab_reports = LabReport.objects.filter(
-        course__lecturer=lecturer
-    ).select_related('course', 'creator', 'laboratory')
+    lab_reports = LabReport.objects.filter(course__lecturer=lecturer).select_related(
+        'course', 'creator', 'laboratory', 'template')
 
-    # Create a dictionary to store detailed information per section
-    student_responses_per_section = {}
+    # Create a dictionary to store detailed information per student
+    student_responses_per_student = {}
 
     # Iterate through each lab report
     for lab_report in lab_reports:
         # Fetch all responses related to this lab report
         responses = StudentResponse.objects.filter(
-            lab_report=lab_report
-        ).select_related('section')
+            lab_report=lab_report).select_related('section', 'student')
 
         # Iterate through each response
         for response in responses:
-            section = response.section
-            if section not in student_responses_per_section:
-                # Initialize an empty list for responses under this section
-                student_responses_per_section[section] = []
+            student = response.student
+            if student not in student_responses_per_student:
+                # Initialize an empty list for the student
+                student_responses_per_student[student] = []
 
-            # Append response details to the list under the corresponding section
-            student_responses_per_section[section].append({
-                'student': lab_report.creator,
-                'response_text': response.response_text,
-                'marks_awarded': response.marks_awarded,
-                'section_marks': section.marks,
-                'feedback': response.feedback,
-                'grade': lab_report.grade.score if lab_report.grade else None,
-                'overall_feedback': lab_report.grade.feedback if lab_report.grade else None,
+            # Append detailed response information
+            student_responses_per_student[student].append({
+                'lab_report_title': lab_report.title,
+                'lab_report_creator': lab_report.creator.username,
+                'lab_report_laboratory': lab_report.laboratory.name,
+                'lab_report_template': lab_report.template.name if lab_report.template else None,
+                'sections': []
             })
 
+            # Fetch all sections related to the lab report's template
+            sections = TemplateSection.objects.filter(
+                lab_template=lab_report.template)
+
+            # Iterate through each section
+            for section in sections:
+                # Find the response related to this section
+                if response.section == section:
+                    # Add detailed section information to the student's response
+                    student_responses_per_student[student][-1]['sections'].append({
+                        'section_title': section.title,
+                        'section_content': section.content,
+                        'marks_awarded': response.marks_awarded,
+                        'section_marks': section.marks,
+                        'grade': lab_report.grade.score if lab_report.grade else None,
+                        'overall_feedback': lab_report.grade.feedback if lab_report.grade else None,
+                    })
+
     # Render the template with the data
-    return render(request, 'lecturer/view_student_responses.html', {'student_responses_per_section': student_responses_per_section})
+    return render(request, 'lecturer/view_student_responses.html', {'student_responses_per_student': student_responses_per_student})
 
 
 def lab_report_student_grades_view(request, lab_report_id):

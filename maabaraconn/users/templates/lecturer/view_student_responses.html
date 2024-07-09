@@ -8,26 +8,38 @@
   <body>
     <h1>Student Responses</h1>
 
-    {% if student_responses_per_section %}
+    {% if student_responses_per_student %}
     <ul>
-      {% for section, responses in student_responses_per_section.items %}
+      {% for student, responses in student_responses_per_student.items %}
       <li>
-        <h2>{{ section.title }}</h2>
+        <h2>{{ student.username }}</h2>
+        {% for response in responses %}
+        <p>
+          <strong>Lab Report Title:</strong> {{ response.lab_report_title }}
+        </p>
+        <p>
+          <strong>Lab Report Creator:</strong> {{ response.lab_report_creator }}
+        </p>
+        <p><strong>Laboratory:</strong> {{ response.lab_report_laboratory }}</p>
+        {% if response.lab_report_template %}
+        <p><strong>Template:</strong> {{ response.lab_report_template }}</p>
+        {% endif %}
         <ul>
-          {% for response in responses %}
+          {% for section in response.sections %}
           <li>
-            <strong>Student: </strong>{{ response.student.username }}<br />
-            <strong>Response: </strong>{{ response.response_text }}<br />
-            <strong>Marks Awarded: </strong>
-            {{ response.marks_awarded }} / {{ response.section_marks }}<br />
-            <strong>Feedback: </strong>{{ response.feedback }}<br />
-            <strong>Grade: </strong>{{ response.grade }}<br />
-            <strong>Overall Feedback: </strong>{{ response.overall_feedback }}
+            <h3>{{ section.section_title }}</h3>
+            <p>{{ section.section_content }}</p>
+            <p><strong>Marks Awarded:</strong> {{ section.marks_awarded }}</p>
+            <p><strong>Section Marks:</strong> {{ section.section_marks }}</p>
+            <p><strong>Grade:</strong> {{ section.grade }}</p>
+            <p>
+              <strong>Overall Feedback:</strong> {{ section.overall_feedback }}
+            </p>
           </li>
-          <hr />
-          <!-- Optional: Add a horizontal line between responses -->
           {% endfor %}
         </ul>
+        <hr />
+        {% endfor %}
       </li>
       {% endfor %}
     </ul>
