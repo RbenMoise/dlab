@@ -4,6 +4,76 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Responses</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        background-color: #f8f9fa;
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        color: #007bff;
+        margin-bottom: 20px;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+        color: #343a40;
+        margin-bottom: 10px;
+      }
+
+      h3 {
+        font-size: 1.5rem;
+        color: #007bff;
+        margin-bottom: 5px;
+      }
+
+      p {
+        margin-bottom: 5px;
+      }
+
+      ul {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      ul li {
+        margin-bottom: 15px;
+        border: 1px solid #dee2e6;
+        padding: 10px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      ul li:hover {
+        background-color: #f8f9fa;
+      }
+
+      ul li h2 {
+        font-size: 1.6rem;
+        color: #007bff;
+        margin-bottom: 10px;
+      }
+
+      ul li p strong {
+        color: #007bff;
+      }
+
+      hr {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        border: none;
+        border-top: 1px solid #dee2e6;
+      }
+
+      .no-responses {
+        font-style: italic;
+        color: #6c757d;
+      }
+    </style>
   </head>
   <body>
     <h1>Student Responses</h1>
@@ -44,7 +114,7 @@
       {% endfor %}
     </ul>
     {% else %}
-    <p>No student responses found.</p>
+    <p class="no-responses">No student responses found.</p>
     {% endif %}
   </body>
 </html>
