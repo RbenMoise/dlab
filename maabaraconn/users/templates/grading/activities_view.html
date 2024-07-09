@@ -1,91 +1,140 @@
-<!-- grading/activities_view.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>All Creations</title>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        padding-top: 20px;
+      }
+      .activity-section {
+        margin-bottom: 30px;
+      }
+      .activity-list {
+        list-style: none;
+        padding-left: 0;
+      }
+      .activity-item {
+        margin-bottom: 10px;
+      }
+      .activity-item strong {
+        font-weight: bold;
+      }
+    </style>
   </head>
   <body>
-    <h1>All Creations</h1>
+    <div class="container">
+      <h1 class="mt-5 mb-4">All Creations</h1>
 
-    <h2>Created Laboratories:</h2>
-    {% if laboratories %}
-    <ul>
-      {% for lab in laboratories %}
-      <li>{{ lab.name }} - Created by {{ lab.creator.username }}</li>
-      {% endfor %}
-    </ul>
-    {% else %}
-    <p>No laboratories created yet.</p>
-    {% endif %}
-
-    <h2>Created Lab Templates:</h2>
-    {% if lab_templates %}
-    <ul>
-      {% for template in lab_templates %}
-      <li>{{ template.name }} - Part of {{ template.laboratory.name }}</li>
-      {% endfor %}
-    </ul>
-    {% else %}
-    <p>No lab templates created yet.</p>
-    {% endif %}
-
-    <h2>Created Lab Reports:</h2>
-    {% if lab_reports %}
-    <ul>
-      {% for report in lab_reports %}
-      <li>{{ report.title }} - Created by {{ report.creator.username }}</li>
-      {% endfor %}
-    </ul>
-    {% else %}
-    <p>No lab reports created yet.</p>
-    {% endif %}
-
-    <h2>Lab Technician Activities:</h2>
-    {% if lab_technician_activities %}
-    <ul>
-      {% for report in lab_technician_activities %}
-      <li>{{ report.title }} - Created by {{ report.creator.username }}</li>
-      {% endfor %}
-    </ul>
-    {% else %}
-    <p>No lab technician activities yet.</p>
-    {% endif %}
-
-    <h2>Student Activities:</h2>
-    {% if student_activities %}
-    <ul>
-      {% for activity in student_activities %}
-      <li>
-        <strong>Student:</strong> {{ activity.student.username }}<br />
-        <strong>Courses:</strong>
-        <ul>
-          {% for course in activity.courses %}
-          <li>{{ course.code }} - {{ course.name }}</li>
-          {% endfor %}
-        </ul>
-        <strong>Lab Report:</strong> {{ activity.lab_report.title }}<br />
-        <strong>Lab Template:</strong> {{ activity.lab_report.template.name
-        }}<br />
-        <strong>Section:</strong> {{ activity.lab_report.section }}<br />
-        <strong>Responses:</strong>
-        <ul>
-          {% for response in activity.responses %}
-          <li>
-            {{ response.section.title }}: {{ response.response_text }} (Marks:
-            {{ response.marks_awarded }}, Feedback: {{ response.feedback }})
+      <div class="activity-section">
+        <h2>Created Laboratories:</h2>
+        {% if laboratories %}
+        <ul class="activity-list">
+          {% for lab in laboratories %}
+          <li class="activity-item">
+            {{ lab.name }} - Created by {{ lab.creator.username }}
           </li>
           {% endfor %}
         </ul>
-        <strong>Grade:</strong> {{ activity.grade.score if activity.grade else
-        'N/A' }}<br />
-        <strong>Grade Feedback:</strong> {{ activity.grade.feedback if
-        activity.grade else 'N/A' }}<br />
-      </li>
-      {% endfor %}
-    </ul>
-    {% else %}
-    <p>No student activities yet.</p>
-    {% endif %}
+        {% else %}
+        <p>No laboratories created yet.</p>
+        {% endif %}
+      </div>
+
+      <div class="activity-section">
+        <h2>Created Lab Templates:</h2>
+        {% if lab_templates %}
+        <ul class="activity-list">
+          {% for template in lab_templates %}
+          <li class="activity-item">
+            {{ template.name }} - Part of {{ template.laboratory.name }}
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p>No lab templates created yet.</p>
+        {% endif %}
+      </div>
+
+      <div class="activity-section">
+        <h2>Created Lab Reports:</h2>
+        {% if lab_reports %}
+        <ul class="activity-list">
+          {% for report in lab_reports %}
+          <li class="activity-item">
+            {{ report.title }} - Created by {{ report.creator.username }}
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p>No lab reports created yet.</p>
+        {% endif %}
+      </div>
+
+      <div class="activity-section">
+        <h2>Lab Technician Activities:</h2>
+        {% if lab_technician_activities %}
+        <ul class="activity-list">
+          {% for report in lab_technician_activities %}
+          <li class="activity-item">
+            {{ report.title }} - Created by {{ report.creator.username }}
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p>No lab technician activities yet.</p>
+        {% endif %}
+      </div>
+
+      <div class="activity-section">
+        <h2>Student Activities:</h2>
+        {% if student_activities %}
+        <ul class="activity-list">
+          {% for activity in student_activities %}
+          <li class="activity-item">
+            <strong>Student:</strong> {{ activity.student.username }}<br />
+            <strong>Courses:</strong>
+            <ul>
+              {% for course in activity.courses %}
+              <li>{{ course.code }} - {{ course.name }}</li>
+              {% endfor %}
+            </ul>
+            <strong>Lab Report:</strong> {{ activity.lab_report.title }}<br />
+            <strong>Lab Template:</strong> {{ activity.lab_report.template.name
+            }}<br />
+            <strong>Section:</strong> {{ activity.lab_report.section }}<br />
+            <strong>Responses:</strong>
+            <ul>
+              {% for response in activity.responses %}
+              <li>
+                {{ response.section.title }}: {{ response.response_text }}
+                (Marks: {{ response.marks_awarded }}, Feedback: {{
+                response.feedback }})
+              </li>
+              {% endfor %}
+            </ul>
+            <strong>Grade:</strong> {{ activity.grade.score if activity.grade
+            else 'N/A' }}<br />
+            <strong>Grade Feedback:</strong> {{ activity.grade.feedback if
+            activity.grade else 'N/A' }}<br />
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p>No student activities yet.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
 </html>
