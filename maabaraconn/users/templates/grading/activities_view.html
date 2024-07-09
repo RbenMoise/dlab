@@ -12,6 +12,7 @@
     <style>
       body {
         padding-top: 20px;
+        background-color: #f8f9fa;
       }
       .activity-section {
         margin-bottom: 30px;
@@ -22,9 +23,26 @@
       }
       .activity-item {
         margin-bottom: 10px;
+        padding: 10px;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .activity-item:hover {
+        background-color: #f8f9fa;
       }
       .activity-item strong {
         font-weight: bold;
+      }
+      .student-info {
+        margin-bottom: 10px;
+      }
+      .response-list {
+        padding-left: 20px;
+      }
+      .grade-info {
+        margin-top: 10px;
       }
     </style>
   </head>
@@ -98,31 +116,47 @@
         <ul class="activity-list">
           {% for activity in student_activities %}
           <li class="activity-item">
-            <strong>Student:</strong> {{ activity.student.username }}<br />
-            <strong>Courses:</strong>
-            <ul>
-              {% for course in activity.courses %}
-              <li>{{ course.code }} - {{ course.name }}</li>
-              {% endfor %}
-            </ul>
-            <strong>Lab Report:</strong> {{ activity.lab_report.title }}<br />
-            <strong>Lab Template:</strong> {{ activity.lab_report.template.name
-            }}<br />
-            <strong>Section:</strong> {{ activity.lab_report.section }}<br />
-            <strong>Responses:</strong>
-            <ul>
-              {% for response in activity.responses %}
-              <li>
-                {{ response.section.title }}: {{ response.response_text }}
-                (Marks: {{ response.marks_awarded }}, Feedback: {{
-                response.feedback }})
-              </li>
-              {% endfor %}
-            </ul>
-            <strong>Grade:</strong> {{ activity.grade.score if activity.grade
-            else 'N/A' }}<br />
-            <strong>Grade Feedback:</strong> {{ activity.grade.feedback if
-            activity.grade else 'N/A' }}<br />
+            <div class="student-info">
+              <strong>Student:</strong> {{ activity.student.username }}
+            </div>
+            <div>
+              <strong>Courses:</strong>
+              <ul>
+                {% for course in activity.courses %}
+                <li>{{ course.code }} - {{ course.name }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+            <div>
+              <strong>Lab Report:</strong> {{ activity.lab_report.title }}
+            </div>
+            <div>
+              <strong>Lab Template:</strong> {{
+              activity.lab_report.template.name }}
+            </div>
+            <div>
+              <strong>Section:</strong> {{ activity.lab_report.section }}
+            </div>
+            <div>
+              <strong>Responses:</strong>
+              <ul class="response-list">
+                {% for response in activity.responses %}
+                <li>
+                  {{ response.section.title }}: {{ response.response_text }}
+                  (Marks: {{ response.marks_awarded }}, Feedback: {{
+                  response.feedback }})
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+            <div class="grade-info">
+              <strong>Grade:</strong> {{ activity.grade.score if activity.grade
+              else 'N/A' }}
+            </div>
+            <div class="grade-info">
+              <strong>Grade Feedback:</strong> {{ activity.grade.feedback if
+              activity.grade else 'N/A' }}
+            </div>
           </li>
           {% endfor %}
         </ul>
