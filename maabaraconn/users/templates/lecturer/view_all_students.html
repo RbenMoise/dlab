@@ -1,24 +1,73 @@
-<!-- view_all_students.html -->
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>All Students and Their Courses</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+      }
+      .container {
+        width: 80%;
+        max-width: 800px;
+        height: 80vh;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+        padding: 20px;
+      }
+      h1 {
+        color: #4caf50;
+        text-align: center;
+        margin-top: 0;
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      li {
+        background-color: #f9f9f9;
+        margin: 10px 0;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      li > ul {
+        margin-top: 10px;
+      }
+      li > ul > li {
+        background-color: #e9e9e9;
+        padding: 10px;
+        border-radius: 3px;
+        margin: 5px 0;
+      }
+    </style>
   </head>
   <body>
-    <h1>All Students and Their Courses.</h1>
-    <ul>
-      {% for student in students %}
-      <li>
-        {{ student.username }}:
-        <ul>
-          {% for course in student.enrolled_courses.all %}
-          <li>{{ course }}</li>
-          {% endfor %}
-        </ul>
-      </li>
-      {% endfor %}
-    </ul>
+    <div class="container">
+      <h1>All Students and Their Courses</h1>
+      <ul>
+        {% for student in students %}
+        <li>
+          <strong>{{ student.username }}:</strong>
+          <ul>
+            {% for course in student.enrolled_courses.all %}
+            <li>{{ course }}</li>
+            {% endfor %}
+          </ul>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
   </body>
 </html>
