@@ -1,16 +1,31 @@
 {% extends "base.html" %} {% block content %}
 <style>
   body {
-    font-family: Arial, sans-serif;
+    font-family: "Roboto", sans-serif;
     line-height: 1.6;
-    background-color: #f8f9fa;
+    background-color: #f0f2f5;
     padding: 20px;
+    {% comment %} display: flex; {% endcomment %}
+    justify-content: center;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 800px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 20px;
+    overflow-y: auto;
+    max-height: 80vh;
   }
 
   h1 {
     font-size: 2.5rem;
     color: #007bff;
     margin-bottom: 20px;
+    text-align: center;
   }
 
   h2 {
@@ -22,11 +37,12 @@
   h3 {
     font-size: 1.5rem;
     color: #007bff;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
   }
 
   p {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    color: #555;
   }
 
   ul {
@@ -37,19 +53,21 @@
   ul li {
     margin-bottom: 15px;
     border: 1px solid #dee2e6;
-    padding: 10px;
-    background-color: #fff;
+    padding: 15px;
+    background-color: #f9f9f9;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
   }
 
   ul li:hover {
-    background-color: #f8f9fa;
+    background-color: #e9ecef;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
   hr {
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin-top: 20px;
+    margin-bottom: 20px;
     border: none;
     border-top: 1px solid #dee2e6;
   }
@@ -58,41 +76,79 @@
     font-style: italic;
     color: #6c757d;
   }
+
+  .report-card {
+    margin-bottom: 30px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+
+  .report-card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+  }
+
+  .report-title {
+    font-size: 1.8rem;
+    color: #007bff;
+    margin-bottom: 10px;
+  }
+
+  .report-info {
+    font-size: 1rem;
+    color: #555;
+  }
 </style>
 
-<h1>Student Activities</h1>
+<div class="container">
+  <h1>Student Activities</h1>
 
-{% for report in lab_reports %}
-<div style="margin-bottom: 15px">
-  <h2>{{ report.title }} by {{ report.creator.username }}</h2>
-  <p>
-    <strong>Course:</strong> {{ report.course.code }} - {{ report.course.name }}
-  </p>
-  <p><strong>Laboratory:</strong> {{ report.laboratory.name }}</p>
-  <p><strong>Submitted at:</strong> {{ report.submitted_at }}</p>
-  <p><strong>Status:</strong> {{ report.status }}</p>
+  {% for report in lab_reports %}
+  <div class="report-card">
+    <h2 class="report-title">
+      {{ report.title }} by {{ report.creator.username }}
+    </h2>
+    <p class="report-info">
+      <strong>Course:</strong> {{ report.course.code }} - {{ report.course.name
+      }}
+    </p>
+    <p class="report-info">
+      <strong>Laboratory:</strong> {{ report.laboratory.name }}
+    </p>
+    <p class="report-info">
+      <strong>Submitted at:</strong> {{ report.submitted_at }}
+    </p>
+    <p class="report-info"><strong>Status:</strong> {{ report.status }}</p>
 
-  <hr />
+    <hr />
 
-  <h3>Responses</h3>
-  {% if report.responses.all %}
-  <ul>
-    {% for response in report.responses.all %}
-    <li>{{ response.response_text }}</li>
-    {% endfor %}
-  </ul>
-  {% else %}
-  <p class="no-responses">No responses yet.</p>
-  {% endif %}
+    <h3>Responses</h3>
+    {% if report.responses.all %}
+    <ul>
+      {% for response in report.responses.all %}
+      <li>{{ response.response_text }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="no-responses">No responses yet.</p>
+    {% endif %}
 
-  <hr />
+    <hr />
 
-  <h3>Grade</h3>
-  {% if report.grade %}
-  <p><strong>Score:</strong> {{ report.grade.score }}</p>
-  <p><strong>Feedback:</strong> {{ report.grade.feedback }}</p>
-  {% else %}
-  <p><strong>Grade:</strong> N/A</p>
-  {% endif %}
+    <h3>Grade</h3>
+    {% if report.grade %}
+    <p class="report-info"><strong>Score:</strong> {{ report.grade.score }}</p>
+    <p class="report-info">
+      <strong>Feedback:</strong> {{ report.grade.feedback }}
+    </p>
+    {% else %}
+    <p class="report-info"><strong>Grade:</strong> N/A</p>
+    {% endif %}
+  </div>
+  {% endfor %}
 </div>
-{% endfor %} {% endblock %}
+
+{% endblock %}
