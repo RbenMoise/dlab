@@ -5,17 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Responses</title>
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+
       body {
-        font-family: Arial, sans-serif;
+        font-family: "Roboto", sans-serif;
         line-height: 1.6;
-        background-color: #f8f9fa;
+        background-color: #f4f7fa;
         padding: 20px;
+        margin: 0;
       }
 
       h1 {
         font-size: 2.5rem;
         color: #007bff;
         margin-bottom: 20px;
+        text-align: center;
       }
 
       h2 {
@@ -31,7 +35,8 @@
       }
 
       p {
-        margin-bottom: 5px;
+        margin-bottom: 10px;
+        color: #555;
       }
 
       ul {
@@ -40,16 +45,18 @@
       }
 
       ul li {
-        margin-bottom: 15px;
+        margin-bottom: 20px;
         border: 1px solid #dee2e6;
-        padding: 10px;
+        padding: 15px;
         background-color: #fff;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
       }
 
       ul li:hover {
-        background-color: #f8f9fa;
+        background-color: #eef3f8;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
       }
 
       ul li h2 {
@@ -72,6 +79,25 @@
       .no-responses {
         font-style: italic;
         color: #6c757d;
+        text-align: center;
+      }
+
+      .response-item {
+        margin-bottom: 15px;
+      }
+
+      .section-item {
+        padding-left: 20px;
+        margin-top: 10px;
+      }
+
+      .section-item h3 {
+        font-size: 1.2rem;
+        margin-top: 10px;
+      }
+
+      .section-item p {
+        margin-bottom: 5px;
       }
     </style>
   </head>
@@ -84,30 +110,36 @@
       <li>
         <h2>{{ student.username }}</h2>
         {% for response in responses %}
-        <p>
-          <strong>Lab Report Title:</strong> {{ response.lab_report_title }}
-        </p>
-        <p>
-          <strong>Lab Report Creator:</strong> {{ response.lab_report_creator }}
-        </p>
-        <p><strong>Laboratory:</strong> {{ response.lab_report_laboratory }}</p>
-        {% if response.lab_report_template %}
-        <p><strong>Template:</strong> {{ response.lab_report_template }}</p>
-        {% endif %}
-        <ul>
-          {% for section in response.sections %}
-          <li>
-            <h3>{{ section.section_title }}</h3>
-            <p>{{ section.section_content }}</p>
-            <p><strong>Marks Awarded:</strong> {{ section.marks_awarded }}</p>
-            <p><strong>Section Marks:</strong> {{ section.section_marks }}</p>
-            <p><strong>Grade:</strong> {{ section.grade }}</p>
-            <p>
-              <strong>Overall Feedback:</strong> {{ section.overall_feedback }}
-            </p>
-          </li>
-          {% endfor %}
-        </ul>
+        <div class="response-item">
+          <p>
+            <strong>Lab Report Title:</strong> {{ response.lab_report_title }}
+          </p>
+          <p>
+            <strong>Lab Report Creator:</strong> {{response.lab_report_creator}}
+          </p>
+          <p>
+            <strong>Laboratory:</strong> {{ response.lab_report_laboratory }}
+          </p>
+          {% if response.lab_report_template %}
+          <p><strong>Template:</strong> {{ response.lab_report_template }}</p>
+          {% endif %}
+          <ul>
+            {% for section in response.sections %}
+            <li class="section-item">
+              <h3>{{ section.section_title }}</h3>
+              <p>{{ section.section_content }}</p>
+              <p><strong>Marks Awarded:</strong> {{ section.marks_awarded }}</p>
+              <p><strong>Section Marks:</strong> {{ section.section_marks }}</p>
+              <p><strong>Grade:</strong> {{ section.grade }}</p>
+              {% comment %}
+              <p>
+                <strong>Overall Feedback:</strong> {{section.overall_feedback }}
+              </p>
+              {% endcomment %}
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
         <hr />
         {% endfor %}
       </li>
