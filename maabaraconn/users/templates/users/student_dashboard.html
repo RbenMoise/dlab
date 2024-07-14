@@ -1,5 +1,4 @@
-{% extends 'base.html' %} 
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <style>
   @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
 
@@ -52,8 +51,8 @@
     background-color: #f8f9fa;
     border: 1px solid #dee2e6;
     border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
@@ -110,17 +109,53 @@
     color: #28a745;
     font-weight: 500;
   }
+
+  .lab-report-item {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .lab-report-item h3 {
+    font-size: 1.4rem;
+    color: #007bff;
+    margin-bottom: 10px;
+  }
+
+  .lab-report-item p {
+    margin-bottom: 5px;
+    color: #555;
+  }
+
+  .lab-report-item a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .lab-report-item a:hover {
+    text-decoration: underline;
+  }
 </style>
 
 <div class="container">
   <h1>Welcome, {{ request.user.username }}</h1>
+
   <section>
     <h2>My Enrolled Courses</h2>
     <ul>
       {% for course in request.user.enrolled_courses.all %}
       <li>
-        <a href="{% url 'course_detail' course.id %}">{{ course.name }} - {{ course.code }}</a>
-        <form method="post" action="{% url 'unenroll_course' %}" style="display: inline">
+        <a href="{% url 'course_detail' course.id %}"
+          >{{ course.name }} - {{ course.code }}</a
+        >
+        <form
+          method="post"
+          action="{% url 'unenroll_course' %}"
+          style="display: inline"
+        >
           {% csrf_token %}
           <input type="hidden" name="course_id" value="{{ course.id }}" />
           <button type="submit" class="btn btn-warning">Unenroll</button>
@@ -133,17 +168,24 @@
   <section>
     <h2>Lab Reports:</h2>
     {% for course in request.user.enrolled_courses.all %}
-    <div>
+    <div class="lab-report-item">
       <h3>{{ course.name }} - {{ course.code }}</h3>
       {% for lab_report in course.lab_reports.all %}
-      <p>
-        <a href="{% url 'lab_report_detail' lab_report.id %}">{{ lab_report.title }}</a> - Due: {{ lab_report.due_date }}
-      </p>
-      <p>Course: {{ lab_report.course }}</p>
-      <p>Description: {{ lab_report.description }}</p>
-      <p>
-        <a href="{% url 'student_lab_report_responses' lab_report.id %}">View Your Responses</a>
-      </p>
+      <div>
+        <p>
+          <a href="{% url 'lab_report_detail' lab_report.id %}"
+            >{{ lab_report.title }}</a
+          >
+          - Due: {{ lab_report.due_date }}
+        </p>
+        <p>Course: {{ course.name }}</p>
+        <p>Description: {{ lab_report.description }}</p>
+        <p>
+          <a href="{% url 'student_lab_report_responses' lab_report.id %}"
+            >View Your Responses</a
+          >
+        </p>
+      </div>
       {% empty %}
       <p>No lab reports available for this course.</p>
       {% endfor %}
@@ -154,7 +196,10 @@
   <section>
     <h2>Available Courses</h2>
     {% for course in available_courses %}
-    <div class="section-content" style="display: flex; justify-content: space-between; align-items: center;">
+    <div
+      class="section-content"
+      style="display: flex; justify-content: space-between; align-items: center"
+    >
       <div>
         <h3>{{ course.name }}</h3>
         <p>{{ course.description }}</p>
@@ -176,19 +221,18 @@
 
   <section>
     <h2>Upcoming Lab Reports</h2>
-    <!-- Implementation depends on how Lab Reports are linked to the student -->
+    <!-- Placeholder for upcoming lab reports -->
   </section>
 
   <section>
     <h2>My Grades</h2>
-    <!-- Implementation depends on how Grades are stored and linked to the student -->
+    <!-- Placeholder for displaying grades -->
   </section>
 
   <h2>Welcome, {{ user.username }}</h2>
   <ul>
     <li>
-      {% comment %} <a href="{% url 'view_grades' lab_report.id %}">View Grades</a> {% endcomment %}
-      <li><a href="{% url 'student_lab_reports' user.id %}">My Lab Reports</a></li>
+      <a href="{% url 'student_lab_reports' user.id %}">My Lab Reports</a>
     </li>
     <!-- Other links -->
   </ul>

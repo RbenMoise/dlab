@@ -1,3 +1,5 @@
+from .forms import LabReportForm
+from .models import Course, LabReport
 from users.models import LabReport, StudentResponse, TemplateSection
 from django.db.models import Avg
 from .models import LabReport, User, StudentResponse
@@ -250,6 +252,7 @@ def unenroll_course(request):
 @login_required
 def upload_lab_report(request, course_id):
     course = Course.objects.get(id=course_id)
+
     if request.method == 'POST':
         form = LabReportForm(request.POST, request.FILES, course_id=course_id)
         if form.is_valid():
@@ -257,6 +260,7 @@ def upload_lab_report(request, course_id):
             lab_report.course = course
             lab_report.creator = request.user
             lab_report.save()
+            # Redirect to your dashboard or another view
             return redirect('labtech_dashboard')
     else:
         form = LabReportForm(course_id=course_id)

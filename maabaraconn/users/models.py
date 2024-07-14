@@ -128,6 +128,7 @@ class LabReport(models.Model):
         LabTemplate, on_delete=models.SET_NULL, null=True, blank=True, related_name='lab_reports'
     )
     is_active = models.BooleanField(default=True)
+    due_date = models.DateField(null=True)
 
     def __str__(self):
         return f"Report by {self.creator.username} for {self.laboratory.name}"

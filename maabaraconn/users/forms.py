@@ -1,3 +1,4 @@
+from .models import LabReport, Laboratory, LabTemplate
 from .models import StudentResponse
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
@@ -39,16 +40,19 @@ class LabReportForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         course_id = kwargs.pop('course_id', None)
         super(LabReportForm, self).__init__(*args, **kwargs)
+
         if course_id:
             self.fields['laboratory'].queryset = Laboratory.objects.filter(
                 course_id=course_id)
             self.fields['template'].queryset = LabTemplate.objects.filter(
                 course_id=course_id)
 
+        self.fields['due_date'].widget = forms.DateInput(
+            attrs={'type': 'date'})
+
     class Meta:
         model = LabReport
-        fields = ['title', 'description', 'laboratory', 'template',]
-# If you have a Grade model and form
+        fields = ['title', 'description', 'laboratory', 'template', 'due_date']
 
 
 class LaboratoryForm(forms.ModelForm):
