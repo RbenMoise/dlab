@@ -1,4 +1,117 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} 
+{% block content %}
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+
+  body {
+    font-family: "Roboto", sans-serif;
+    background-color: #f4f7fa;
+    margin: 0;
+    padding: 20px;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .container h1 {
+    font-size: 2rem;
+    color: #007bff;
+    margin-bottom: 20px;
+  }
+
+  section {
+    margin-bottom: 30px;
+  }
+
+  section h2 {
+    font-size: 1.6rem;
+    color: #343a40;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+  }
+
+  section h3 {
+    font-size: 1.3rem;
+    color: #007bff;
+    margin-bottom: 5px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  ul li {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  ul li a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  ul li a:hover {
+    text-decoration: underline;
+  }
+
+  .btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-primary {
+    background-color: #007bff;
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+
+  .btn-warning {
+    background-color: #ffc107;
+    color: #343a40;
+  }
+
+  .btn-warning:hover {
+    background-color: #e0a800;
+  }
+
+  .section-content {
+    margin-bottom: 15px;
+  }
+
+  .section-content p {
+    margin: 5px 0;
+    color: #555;
+  }
+
+  .already-enrolled {
+    color: #28a745;
+    font-weight: 500;
+  }
+</style>
+
 <div class="container">
   <h1>Welcome, {{ request.user.username }}</h1>
   <section>
@@ -6,14 +119,8 @@
     <ul>
       {% for course in request.user.enrolled_courses.all %}
       <li>
-        <a href="{% url 'course_detail' course.id %}"
-          >{{ course.name }} - {{ course.code }}</a
-        >
-        <form
-          method="post"
-          action="{% url 'unenroll_course' %}"
-          style="display: inline"
-        >
+        <a href="{% url 'course_detail' course.id %}">{{ course.name }} - {{ course.code }}</a>
+        <form method="post" action="{% url 'unenroll_course' %}" style="display: inline">
           {% csrf_token %}
           <input type="hidden" name="course_id" value="{{ course.id }}" />
           <button type="submit" class="btn btn-warning">Unenroll</button>
@@ -30,17 +137,12 @@
       <h3>{{ course.name }} - {{ course.code }}</h3>
       {% for lab_report in course.lab_reports.all %}
       <p>
-        <a href="{% url 'lab_report_detail' lab_report.id %}">
-          {{ lab_report.title }}
-        </a>
-        - Due: {{ lab_report.due_date }}
+        <a href="{% url 'lab_report_detail' lab_report.id %}">{{ lab_report.title }}</a> - Due: {{ lab_report.due_date }}
       </p>
       <p>Course: {{ lab_report.course }}</p>
       <p>Description: {{ lab_report.description }}</p>
       <p>
-        <a href="{% url 'student_lab_report_responses' lab_report.id %}"
-          >View Your Responses</a
-        >
+        <a href="{% url 'student_lab_report_responses' lab_report.id %}">View Your Responses</a>
       </p>
       {% empty %}
       <p>No lab reports available for this course.</p>
@@ -52,18 +154,22 @@
   <section>
     <h2>Available Courses</h2>
     {% for course in available_courses %}
-    <div style="display: flex">
-      <h3>{{ course.name }}</h3>
-      <p>{{ course.description }}</p>
-      {% if course not in request.user.enrolled_courses.all %}
-      <form method="post" action="{% url 'enroll_course' %}">
-        {% csrf_token %}
-        <input type="hidden" name="course_id" value="{{ course.id }}" />
-        <button type="submit" class="btn btn-primary">Enroll</button>
-      </form>
-      {% else %}
-      <span>Already enrolled</span>
-      {% endif %}
+    <div class="section-content" style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h3>{{ course.name }}</h3>
+        <p>{{ course.description }}</p>
+      </div>
+      <div>
+        {% if course not in request.user.enrolled_courses.all %}
+        <form method="post" action="{% url 'enroll_course' %}">
+          {% csrf_token %}
+          <input type="hidden" name="course_id" value="{{ course.id }}" />
+          <button type="submit" class="btn btn-primary">Enroll</button>
+        </form>
+        {% else %}
+        <span class="already-enrolled">Already enrolled</span>
+        {% endif %}
+      </div>
     </div>
     {% endfor %}
   </section>
@@ -78,20 +184,13 @@
     <!-- Implementation depends on how Grades are stored and linked to the student -->
   </section>
 
-  
-
-  <h2>Welcome,c {{ user.username }}</h2>
+  <h2>Welcome, {{ user.username }}</h2>
   <ul>
     <li>
-     
       {% comment %} <a href="{% url 'view_grades' lab_report.id %}">View Grades</a> {% endcomment %}
-
-
       <li><a href="{% url 'student_lab_reports' user.id %}">My Lab Reports</a></li>
     </li>
     <!-- Other links -->
   </ul>
-
-  
 </div>
 {% endblock %}

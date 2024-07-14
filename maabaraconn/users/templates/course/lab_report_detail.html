@@ -1,4 +1,85 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+
+  body {
+    font-family: "Roboto", sans-serif;
+    background-color: #f4f7fa;
+    margin: 0;
+    padding: 20px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  h1 {
+    font-size: 2rem;
+    color: #007bff;
+    margin-bottom: 20px;
+  }
+
+  p {
+    margin: 10px 0;
+    color: #555;
+  }
+
+  form div {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+  }
+
+  form h3 {
+    font-size: 1.4rem;
+    color: #343a40;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #007bff;
+    padding-bottom: 5px;
+  }
+
+  textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    font-family: "Roboto", sans-serif;
+  }
+
+  .btn-success {
+    background-color: #28a745;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-success:hover {
+    background-color: #218838;
+  }
+
+  a {
+    display: inline-block;
+    margin-top: 20px;
+    color: #007bff;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+</style>
+
 <div class="container">
   <h1>{{ lab_report.title }}</h1>
   <p><strong>Description:</strong> {{ lab_report.description }}</p>
@@ -6,17 +87,12 @@
     {% csrf_token %} {% for section in sections %}
     <div>
       <h3>{{ section.title }}</h3>
-      {% comment %}
-      <p><strong>Instructions:</strong> {{ section.instructions }}</p>
-      {% endcomment %}
       <p><strong>Content:</strong></p>
-      <!-- Display the content of the section -->
       <p>{{ section.content }}</p>
       <p><strong>Marks:</strong> {{ section.marks }}</p>
-      <!-- Display the marks -->
-      <textarea name="response_{{ section.id }}" rows="4" cols="50">
-        {{ responses.section.id }}
-      </textarea>
+      <textarea name="response_{{ section.id }}" rows="4">
+{{ responses.section.id }}</textarea
+      >
     </div>
     {% endfor %}
     <button type="submit" class="btn btn-success">Submit Responses</button>

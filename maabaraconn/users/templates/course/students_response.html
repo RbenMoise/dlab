@@ -1,12 +1,87 @@
-{% extends "base.html" %} {% block content %}
-<h2>Responses for {{ lab_report.title }}</h2>
+{% extends "base.html" %} {% load static %} {% block content %}
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
 
-{% if responses %}
-<ul>
-  {% for response in responses %}
-  <li>{{ response.response_text }}</li>
-  {% endfor %}
-</ul>
-{% else %}
-<p>No responses submitted yet.</p>
-{% endif %} {% endblock %}
+  body {
+    font-family: "Roboto", sans-serif;
+    background-color: #f4f7fa;
+    margin: 0;
+    padding: 20px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    color: #007bff;
+    margin-bottom: 20px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  p {
+    margin: 10px 0;
+    color: #555;
+  }
+
+  .no-responses {
+    font-style: italic;
+    color: #999;
+  }
+
+  .response-title {
+    font-size: 1.2rem;
+    color: #007bff;
+    margin-bottom: 5px;
+  }
+
+  .response-content {
+    margin-bottom: 10px;
+  }
+
+  .response-mark {
+    font-weight: bold;
+    color: #28a745;
+  }
+</style>
+
+<div class="container">
+  <h2>Responses for "{{ lab_report.title }}"</h2>
+
+  {% if responses %}
+  <ul>
+    {% for response in responses %}
+    <li>
+      <div class="response-title">{{ response.section.title }}</div>
+      <div class="response-content">
+        <p><strong>Content:</strong> {{ response.section.content }}</p>
+        <p><strong>Student's Response:</strong> {{ response.response_text }}</p>
+        <p><strong>Marks Assigned:</strong> {{ response.section.marks }}</p>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="no-responses">No responses submitted yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
